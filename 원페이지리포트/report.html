@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>FIT.ME | Report</title>
+
+	<!-- CSS : Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+	<!-- CSS : Font Awesome -->
+	<link href="css/all.min.css" rel="stylesheet">
+
+	<!-- CSS : Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<!-- CSS : Custom -->
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body class="lightgray">
+
+	<main class="report-main">
+
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-11 col-xl-10">
+					<div class="page-header d-flex align-items-end">
+						<div class="profile-image me-4"></div>
+						<div>
+							<h1>
+								<strong>김한울</strong>
+								님의 건강 리포트
+							</h1>
+							<p>건강 정보, 활동, 식사를 고려하여 최적의 정보를 제공합니다</p>
+						</div>
+					</div>
+					<hr>
+
+					<!-- <ul class="nav nav-tabs nav-fill" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">Activity</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#nutrition" role="tab" aria-controls="nutrition" aria-selected="false">Nutrition</a>
+						</li>
+					</ul> -->
+
+					<div class="tab-content">
+						<div class="tab-pane fade show active" id="overview" role="tabpanel" data-filter-list="content-list-body">
+							<div class="content-list">
+								<div class="row content-list-head">
+									<div class="col-auto">
+										<h2>Overview</h2>
+									</div>
+								</div>
+								<div class="row content-list-head">
+									<div class="col-auto">
+										<h3>기본 정보</h3>
+									</div>
+								</div>
+								<div class="content-list-body row g-2">
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">Height</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="height"></span>
+														<span class="text-small">cm</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">Weight</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="weight"></span>
+														<span class="text-small">kg</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">Age</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="age"></span>
+														<span class="text-small">세</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-12">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">BMI</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc_bmi"></span>
+														<div class="bmi-spectrum"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="col-lg-12">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">총평</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="comment-basic-info">비교적 높은 BMI를 갖고 계시네요. 저희와 함께 관리해보시는 게 어떠세요?</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div> -->
+								</div>
+
+								
+								<hr>
+
+
+								<div class="row content-list-head">
+									<div class="col-auto">
+										<h3>관리 목표</h3>
+									</div>
+								</div>
+								<div class="content-list-body row g-2">
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">현재 체중</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="weight"></span>
+														<span class="text-small">kg</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">현재 체지방량</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-bfat-current"></span>
+														<span class="text-small">kg</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">현재 제지방량</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-bfat-current-inverse"></span>
+														<span class="text-small">kg</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">현재 체지방률</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="bfat-current-percent"></span>
+														<span class="text-small">%</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">목표 체중</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-weight-target"></span>
+														<span class="text-small">kg</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">목표 체지방량</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-bfat-target"></span>
+														<span class="text-small">kg</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">목표 제지방량</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-bfat-target-inverse"></span>
+														<span class="text-small">kg</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">목표 체지방률</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="bfat-target-percent"></span>
+														<span class="text-small">%</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- <div class="col-lg-12">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">코멘트</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="comment-target">현재 체지방률과 목표 체지방률에 큰 차이가 나지 않아요. 꾸준함만 있으면 목표를 곧 달성하실 수 있을 거에요.</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div> -->
+								</div>
+
+								
+								<hr>
+
+								
+
+
+								<div class="row content-list-head">
+									<div class="col-auto">
+										<h3>대사 정보</h3>
+									</div>
+								</div>
+								<div class="content-list-body row g-2">
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">현재 기초대사량</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-metarate-resting"></span>
+														<span class="text-small">kcal</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">현재 활동량</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-activity-text"></span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">현재 활동대사량</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-metarate-active"></span>
+														<span class="text-small">kcal</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">체중 유지 칼로리</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-metarate-sustain"></span>
+														<span class="text-small">kcal</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								
+								<hr>
+	
+									
+	
+	
+								<div class="row content-list-head">
+									<div class="col-auto">
+										<h3>추천 권장 섭취량</h3>
+									</div>
+								</div>
+								<div class="content-list-body row g-2">
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">관리 시작일</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-date-now"></span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">추천 관리 기간</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-timespan"></span>
+														<span class="text-small">일</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">관리 마감일</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-date-finish"></span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">총 소비 칼로리</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-kcal-total"></span>
+														<span class="text-small">kcal</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">하루 소비 칼로리</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-kcal-daily-consume"></span>
+														<span class="text-small">kcal</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">하루 목표 섭취량</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-kcal-daily-total"></span>
+														<span class="text-small">kcal</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-12">
+										<div class="card card-project">
+											<div class="card-body">
+												<div class="card-title">
+													<h5 data-filter-by="text" class="H5-filter-by-text">코멘트</h5>
+												</div>
+												<div class="card-meta d-flex justify-content-between">
+													<div class="d-flex align-items-center">
+														<span class="value" data-for="calc-comment-fin"></span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer>
+		
+	</footer>
+	
+	<!-- JS : Bootstrap -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+	<!-- JS : Custom -->
+	<script src="js/report.js"></script>
+</body>
+</html>

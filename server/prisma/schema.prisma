@@ -1,0 +1,596 @@
+// Prisma Schema for HELLGATER
+// MVP Phase - Core Tables Only
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// 1. USERS & CHARACTERS
+// ============================================
+
+model User {
+  id                    String    @id @default(uuid()) @db.Uuid
+  email                 String    @unique @db.VarChar(255)
+  passwordHash          String    @map("password_hash") @db.VarChar(255)
+  username              String    @unique @db.VarChar(50)
+
+  // Profile
+  profileImageUrl       String?   @map("profile_image_url")
+  bio                   String?
+
+  // Basic Info
+  gender                String?   @db.VarChar(10)
+  birthdate             DateTime? @db.Date
+  height                Decimal?  @db.Decimal(5, 2)
+  weight                Decimal?  @db.Decimal(5, 2)
+
+  // Timestamps
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  lastLoginAt           DateTime? @map("last_login_at")
+
+  // Subscription
+  subscriptionTier      String    @default("free") @map("subscription_tier") @db.VarChar(20)
+  subscriptionExpiresAt DateTime? @map("subscription_expires_at")
+
+  // Soft delete
+  deletedAt             DateTime? @map("deleted_at")
+
+  // Relations
+  character             Character?
+  bodyParts             UserBodyPart[]
+  workoutRecords        WorkoutRecord[]
+  userSkills            UserSkill[]
+  mapProgress           UserMapProgress[]
+  achievements          UserAchievement[]
+  quests                UserQuest[]
+  posts                 Post[]
+  postLikes             PostLike[]
+  comments              Comment[]
+  refreshTokens         RefreshToken[]
+
+  @@index([email])
+  @@index([username])
+  @@index([createdAt])
+  @@map("users")
+}
+
+model Character {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @unique @map("user_id") @db.Uuid
+
+  // Appearance
+  characterModel    String   @default("default") @map("character_model") @db.VarChar(50)
+  skinColor         String?  @map("skin_color") @db.VarChar(20)
+
+  // Total Level
+  totalLevel        Int      @default(1) @map("total_level")
+  totalExp          Int      @default(0) @map("total_exp")
+
+  // Stats (9가지 능력치)
+  muscleEndurance   Int      @default(0) @map("muscle_endurance")
+  strength          Int      @default(0)
+  explosivePower    Int      @default(0) @map("explosive_power")
+  speed             Int      @default(0)
+  mentalPower       Int      @default(0) @map("mental_power")
+  flexibility       Int      @default(0)
+  knowledge         Int      @default(0)
+  balance           Int      @default(0)
+  agility           Int      @default(0)
+
+  // 5속성 진행도
+  earthProgress     Int      @default(0) @map("earth_progress")
+  fireProgress      Int      @default(0) @map("fire_progress")
+  windProgress      Int      @default(0) @map("wind_progress")
+  waterProgress     Int      @default(0) @map("water_progress")
+  mindProgress      Int      @default(0) @map("mind_progress")
+
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([totalLevel])
+  @@map("characters")
+}
+
+// ============================================
+// 2. BODY PARTS & WORKOUT RECORDS
+// ============================================
+
+model BodyPart {
+  id            Int     @id @default(autoincrement())
+  code          String  @unique @db.VarChar(20)
+  nameKo        String  @map("name_ko") @db.VarChar(50)
+  nameEn        String  @map("name_en") @db.VarChar(50)
+  displayOrder  Int     @map("display_order")
+
+  // Relations
+  userBodyParts UserBodyPart[]
+  exercises     Exercise[]
+  workoutRecords WorkoutRecord[]
+  skills        Skill[]
+
+  @@map("body_parts")
+}
+
+model UserBodyPart {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  bodyPartId    Int       @map("body_part_id")
+
+  // Level & Exp
+  level         Int       @default(1)
+  currentExp    Int       @default(0) @map("current_exp")
+
+  // 1RM Record
+  max1RmWeight  Decimal   @default(0) @map("max_1rm_weight") @db.Decimal(6, 2)
+  lastWorkoutAt DateTime? @map("last_workout_at")
+
+  // Timestamps
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bodyPart      BodyPart  @relation(fields: [bodyPartId], references: [id])
+
+  @@unique([userId, bodyPartId])
+  @@index([userId])
+  @@index([userId, level])
+  @@map("user_body_parts")
+}
+
+model Exercise {
+  id                Int      @id @default(autoincrement())
+  code              String   @unique @db.VarChar(50)
+  nameKo            String   @map("name_ko") @db.VarChar(100)
+  nameEn            String   @map("name_en") @db.VarChar(100)
+
+  // Classification
+  bodyPartId        Int      @map("body_part_id")
+  category          String?  @db.VarChar(50)
+  difficulty        String?  @db.VarChar(20)
+
+  // Description
+  description       String?
+  howTo             String?  @map("how_to")
+  videoUrl          String?  @map("video_url")
+  thumbnailUrl      String?  @map("thumbnail_url")
+
+  // Calorie calculation
+  caloriePerRepKg   Decimal  @default(0.05) @map("calorie_per_rep_kg") @db.Decimal(6, 4)
+
+  // Meta
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  bodyPart          BodyPart @relation(fields: [bodyPartId], references: [id])
+  workoutRecords    WorkoutRecord[]
+  skills            Skill[]
+
+  @@index([bodyPartId])
+  @@index([difficulty])
+  @@map("exercises")
+}
+
+model WorkoutRecord {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  exerciseId    Int      @map("exercise_id")
+  bodyPartId    Int      @map("body_part_id")
+
+  // Workout Data
+  sets          Int
+  reps          Int
+  weight        Decimal  @db.Decimal(6, 2)
+
+  // RM Analysis
+  calculated1RM Decimal? @map("calculated_1rm") @db.Decimal(6, 2)
+  rmPercentage  Decimal? @map("rm_percentage") @db.Decimal(5, 2)
+  grade         String?  @db.VarChar(20)
+
+  // Results
+  expGained     Int?     @map("exp_gained")
+  caloriesBurned Decimal? @map("calories_burned") @db.Decimal(6, 2)
+
+  // Verification
+  videoUrl      String?  @map("video_url")
+  verified      Boolean  @default(false)
+
+  // Notes
+  notes         String?
+
+  // Timestamps
+  workoutDate   DateTime @map("workout_date") @db.Date
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise      Exercise  @relation(fields: [exerciseId], references: [id])
+  bodyPart      BodyPart  @relation(fields: [bodyPartId], references: [id])
+
+  @@index([userId, workoutDate(sort: Desc)])
+  @@index([userId, bodyPartId, workoutDate(sort: Desc)])
+  @@index([exerciseId])
+  @@map("workout_records")
+}
+
+// ============================================
+// 3. SKILL TREE
+// ============================================
+
+model Skill {
+  id                    Int      @id @default(autoincrement())
+  code                  String   @unique @db.VarChar(50)
+  nameKo                String   @map("name_ko") @db.VarChar(100)
+  nameEn                String   @map("name_en") @db.VarChar(100)
+
+  // Classification
+  bodyPartId            Int      @map("body_part_id")
+  tier                  String   @db.VarChar(20)
+
+  // Linked Exercise
+  exerciseId            Int?     @map("exercise_id")
+
+  // Unlock Requirements
+  requiredLevel         Int?     @map("required_level")
+  requiredReps          Int?     @map("required_reps")
+  requiredWeight        Decimal? @map("required_weight") @db.Decimal(6, 2)
+  prerequisiteSkillIds  Int[]    @map("prerequisite_skill_ids")
+
+  // Visual
+  treePositionX         Int?     @map("tree_position_x")
+  treePositionY         Int?     @map("tree_position_y")
+  iconUrl               String?  @map("icon_url")
+
+  // Description
+  description           String?
+  unlockMessage         String?  @map("unlock_message")
+
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  // Relations
+  bodyPart              BodyPart @relation(fields: [bodyPartId], references: [id])
+  exercise              Exercise? @relation(fields: [exerciseId], references: [id])
+  userSkills            UserSkill[]
+
+  @@index([bodyPartId])
+  @@index([tier])
+  @@map("skills")
+}
+
+model UserSkill {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  skillId       Int      @map("skill_id")
+
+  unlockedAt    DateTime @default(now()) @map("unlocked_at")
+
+  // Usage Stats
+  timesUsed     Int      @default(0) @map("times_used")
+  lastUsedAt    DateTime? @map("last_used_at")
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill         Skill    @relation(fields: [skillId], references: [id])
+
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([userId, unlockedAt(sort: Desc)])
+  @@map("user_skills")
+}
+
+// ============================================
+// 4. MAP EXPLORATION
+// ============================================
+
+model MapStage {
+  id                    Int      @id @default(autoincrement())
+  code                  String   @unique @db.VarChar(50)
+
+  // Classification
+  mapType               String   @map("map_type") @db.VarChar(20)
+  chapter               Int
+  stage                 Int
+
+  // Display
+  nameKo                String   @map("name_ko") @db.VarChar(100)
+  nameEn                String   @map("name_en") @db.VarChar(100)
+  description           String?
+  backgroundImageUrl    String?  @map("background_image_url")
+
+  // Requirements
+  requiredTotalLevel    Int?     @map("required_total_level")
+  prerequisiteStageId   Int?     @map("prerequisite_stage_id")
+
+  // Clear & Rewards (JSON)
+  clearConditions       Json     @map("clear_conditions")
+  rewards               Json
+
+  // Map Position
+  mapPositionX          Int?     @map("map_position_x")
+  mapPositionY          Int?     @map("map_position_y")
+
+  displayOrder          Int      @map("display_order")
+  isActive              Boolean  @default(true) @map("is_active")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  // Relations
+  userProgress          UserMapProgress[]
+
+  @@index([mapType, chapter, stage])
+  @@map("map_stages")
+}
+
+model UserMapProgress {
+  id                    String   @id @default(uuid()) @db.Uuid
+  userId                String   @map("user_id") @db.Uuid
+  stageId               Int      @map("stage_id")
+
+  // Status
+  status                String   @default("locked") @db.VarChar(20)
+
+  // Progress (JSON)
+  progress              Json?
+
+  // Completion
+  completedAt           DateTime? @map("completed_at")
+  completionTimeSeconds Int?      @map("completion_time_seconds")
+
+  unlockedAt            DateTime? @map("unlocked_at")
+  startedAt             DateTime? @map("started_at")
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stage                 MapStage  @relation(fields: [stageId], references: [id])
+
+  @@unique([userId, stageId])
+  @@index([userId, status])
+  @@index([userId, completedAt(sort: Desc)])
+  @@map("user_map_progress")
+}
+
+// ============================================
+// 5. QUESTS & ACHIEVEMENTS
+// ============================================
+
+model Achievement {
+  id                Int      @id @default(autoincrement())
+  code              String   @unique @db.VarChar(50)
+  nameKo            String   @map("name_ko") @db.VarChar(100)
+  nameEn            String   @map("name_en") @db.VarChar(100)
+  description       String?
+
+  // Classification
+  category          String?  @db.VarChar(50)
+  tier              String?  @db.VarChar(20)
+
+  // Condition
+  conditionType     String   @map("condition_type") @db.VarChar(50)
+  conditionValue    Int      @map("condition_value")
+
+  // Rewards (JSON)
+  rewardExp         Int      @default(0) @map("reward_exp")
+  rewardItems       Json?    @map("reward_items")
+
+  // Display
+  iconUrl           String?  @map("icon_url")
+  badgeUrl          String?  @map("badge_url")
+
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  userAchievements  UserAchievement[]
+
+  @@index([category])
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  achievementId Int      @map("achievement_id")
+
+  // Progress
+  progress      Int      @default(0)
+  isCompleted   Boolean  @default(false) @map("is_completed")
+  completedAt   DateTime? @map("completed_at")
+
+  // Display
+  isDisplayed   Boolean  @default(false) @map("is_displayed")
+
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@index([userId, isCompleted, completedAt(sort: Desc)])
+  @@map("user_achievements")
+}
+
+model DailyQuest {
+  id                Int      @id @default(autoincrement())
+  code              String   @unique @db.VarChar(50)
+  nameKo            String   @map("name_ko") @db.VarChar(100)
+  nameEn            String   @map("name_en") @db.VarChar(100)
+  description       String?
+
+  // Quest Type
+  questType         String   @map("quest_type") @db.VarChar(50)
+  targetValue       Int      @map("target_value")
+  targetBodyPartId  Int?     @map("target_body_part_id")
+
+  // Rewards (JSON)
+  rewardExp         Int      @default(0) @map("reward_exp")
+  rewardItems       Json?    @map("reward_items")
+
+  // Recurrence
+  recurrence        String   @db.VarChar(20)
+
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  userQuests        UserQuest[]
+
+  @@map("daily_quests")
+}
+
+model UserQuest {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  questId       Int       @map("quest_id")
+
+  // Progress
+  progress      Int       @default(0)
+  isCompleted   Boolean   @default(false) @map("is_completed")
+  completedAt   DateTime? @map("completed_at")
+
+  // Reward
+  rewardClaimed Boolean   @default(false) @map("reward_claimed")
+  rewardClaimedAt DateTime? @map("reward_claimed_at")
+
+  // Assignment
+  assignedDate  DateTime  @map("assigned_date") @db.Date
+  expiresAt     DateTime? @map("expires_at")
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quest         DailyQuest @relation(fields: [questId], references: [id])
+
+  @@unique([userId, questId, assignedDate])
+  @@index([userId, assignedDate(sort: Desc)])
+  @@index([userId, isCompleted, assignedDate])
+  @@map("user_quests")
+}
+
+// ============================================
+// 6. COMMUNITY
+// ============================================
+
+model Post {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+
+  // Content
+  title             String?   @db.VarChar(200)
+  content           String
+  images            String[]
+
+  // Linked Workout
+  workoutRecordId   String?   @map("workout_record_id") @db.Uuid
+
+  // Category
+  category          String?   @db.VarChar(50)
+
+  // Stats
+  likesCount        Int       @default(0) @map("likes_count")
+  commentsCount     Int       @default(0) @map("comments_count")
+  viewsCount        Int       @default(0) @map("views_count")
+
+  // Status
+  isPublished       Boolean   @default(true) @map("is_published")
+  deletedAt         DateTime? @map("deleted_at")
+
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes             PostLike[]
+  comments          Comment[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([category, createdAt(sort: Desc)])
+  @@index([likesCount(sort: Desc), createdAt(sort: Desc)])
+  @@map("posts")
+}
+
+model PostLike {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @map("post_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("post_likes")
+}
+
+model Comment {
+  id                String    @id @default(uuid()) @db.Uuid
+  postId            String    @map("post_id") @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+
+  content           String
+
+  // Nested Comments
+  parentCommentId   String?   @map("parent_comment_id") @db.Uuid
+
+  likesCount        Int       @default(0) @map("likes_count")
+
+  deletedAt         DateTime? @map("deleted_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  post              Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent            Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies           Comment[] @relation("CommentReplies")
+
+  @@index([postId, createdAt(sort: Asc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("comments")
+}
+
+// ============================================
+// 7. SYSTEM TABLES
+// ============================================
+
+model RefreshToken {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+
+  tokenHash  String   @map("token_hash") @db.Text
+
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Device Info
+  deviceType String?  @map("device_type") @db.Text
+  deviceId   String?  @map("device_id") @db.Text
+  ipAddress  String?  @map("ip_address") @db.Inet
+
+  // Relations
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("refresh_tokens")
+}

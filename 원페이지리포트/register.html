@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>FIT.ME | Register</title>
+
+	<!-- CSS : Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+	<!-- CSS : Font Awesome -->
+	<link href="css/all.min.css" rel="stylesheet">
+
+	<!-- CSS : Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<!-- CSS : Custom -->
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+	<div class="pyro">
+		<div class="before"></div>
+		<div class="after"></div>
+	</div>
+	<div class="gradient-container">
+		<main class="inquiry-main" data-gender="male">
+			<aside>
+				<div class="inquiry-logo">FIT.ME</div>
+			</aside>
+			<div class="inquiry-helper">
+				<span>도움이 필요하세요?</span>
+				<span class="text-secondary">저희 전문가와 상담하세요</span>
+				<span class="text-warning">010-2222-3333</span>
+			</div>
+
+			<section class="inquiry-section" data-page="0">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="inquiry-title">성별은 무엇인가요?</div>
+						<div class="inquiry-gender-selection">
+							<div class="inquiry-gender-option" data-for="male">
+								<div class="option-image"></div>
+								<div class="option-label">남성</div>
+							</div>
+							<div class="inquiry-gender-option" data-for="female">
+								<div class="option-image"></div>
+								<div class="option-label">여성</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section" data-page="1">
+				<div class="inquiry-main-container">
+					<div class="visual-que-person"></div>
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="inquiry-title">몇 살이신가요?</div>
+						<div class="inquiry-num-input" for="age">20</div>
+						<input type="range" min="10" max="100" value="20" class="slider slider-age">
+						<div class="link-section">
+							<a href="#" class="link-prev link-secondary">
+								<i class="fas fa-angle-left"></i>
+								뒤로
+							</a>
+							<a href="#" class="link-next">
+								입력했어요!
+								<i class="fas fa-angle-right"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section" data-page="2">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="visual-que-person"></div>
+						<div class="inquiry-title">키를 입력해주세요.</div>
+						<div class="inquiry-num-input" for="height">160</div>
+						<input type="range" min="150" max="220" value="160" class="slider slider-height">
+						<div class="link-section">
+							<a href="#" class="link-prev link-secondary">
+								<i class="fas fa-angle-left"></i>
+								뒤로
+							</a>
+							<a href="#" class="link-next">
+								입력했어요!
+								<i class="fas fa-angle-right"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section" data-page="3">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="visual-que-person"></div>
+						<div class="inquiry-title">몸무게를 입력해주세요.</div>
+						<div class="inquiry-num-input" for="weight">50</div>
+						<input type="range" min="30" max="125" value="50" class="slider slider-weight">
+						<div class="link-section">
+							<a href="#" class="link-prev link-secondary">
+								<i class="fas fa-angle-left"></i>
+								뒤로
+							</a>
+							<a href="#" class="link-next">
+								입력했어요!
+								<i class="fas fa-angle-right"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section inquiry-section-full inquery-congrat" data-page="fin">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="scaled-icon">
+							<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" style="transform: scale(2)">
+								<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+								<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+							</svg>
+						</div>
+						<div class="inquiry-logo">FIT.ME</div>
+						<div class="inquiry-title">가입을 환영합니다!</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section inquiry-section-full inquery-additional-action" data-page="fin-next">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="inquiry-logo">FIT.ME</div>
+						<div class="action-list action-fin-next">
+							<!-- <a href="index.html" class="action-entry action-peek">
+								<div class="action-image"></div>
+								<div class="action-title">둘러보기</div>
+								<div class="action-desc">지금 작성하지 않더라도<br>언제든지 작성할 수 있어요</div>
+							</a> -->
+							<a href="additional_info.html" class="action-entry action-add-info">
+								<div class="action-image"></div>
+								<div class="action-title">추가 정보 입력</div>
+								<div class="action-desc">추가 정보를 입력하면<br>더 자세한 결과를 볼 수 있어요</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- <section class="inquiry-section" data-page="load-unfinished-confirm">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="visual-que-person"></div>
+						<div class="inquiry-title">다시 오신 걸 환영해요.<br>작성 중이던 데이터가 있네요,<br>이어서 작성하시겠어요?</div>
+						<div class="action-list action-load-unfinished" data-action="load-unfinished-load">
+							<a href="#" class="action-entry">
+								<div class="action-image"></div>
+								<div class="action-title">이어서 할게요</div>
+								<div class="action-desc">작성 중이던 데이터와 시점에서 이어서 진행해요</div>
+							</a>
+							<a href="#" class="action-entry" data-action="load-unfinished-reset">
+								<div class="action-image"></div>
+								<div class="action-title">처음부터 할래요</div>
+								<div class="action-desc">작성 중이던 데이터는 삭제되고 처음부터 진행해요</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section> -->
+
+			<div class="inquery-footer">
+				<div class="inquiry-indicator">
+					<div class="indicator-text">1 OF 4</div>
+					<div class="indicator-bar">
+						<div class="indicator-bar-filled"></div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+	
+	<!-- JS : Bootstrap -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+	<!-- JS : Custom -->
+	<script src="js/register.js"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>FIT.ME | Additional Information</title>
+
+	<!-- CSS : Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+	<!-- CSS : Font Awesome -->
+	<link href="css/all.min.css" rel="stylesheet">
+
+	<!-- CSS : Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	<!-- CSS : Custom -->
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+	<div class="pyro">
+		<div class="before"></div>
+		<div class="after"></div>
+	</div>
+	<div class="gradient-container">
+		<main class="inquiry-main" data-gender="male">
+			<aside>
+				<div class="inquiry-logo">FIT.ME</div>
+			</aside>
+			<div class="inquiry-helper">
+				<span>도움이 필요하세요?</span>
+				<span class="text-secondary">저희 전문가와 상담하세요</span>
+				<span class="text-warning">010-2222-3333</span>
+			</div>
+
+			<section class="inquiry-section" data-page="0">
+				<div class="inquiry-main-container">
+					<div class="visual-que-person"></div>
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="inquiry-title">평소에 어느 정도 활동을 하시나요?</div>
+						<div class="inquiry-activity-selection">
+							<div class="inquiry-activity-option" data-for="none" data-for-as-number='0'>
+								<div class="option-image"></div>
+								<div class="option-label">적거나 없어요</div>
+							</div>
+							<div class="inquiry-activity-option" data-for="easy" data-for-as-number='1'>
+								<div class="option-image"></div>
+								<div class="option-label">가볍게 해요</div>
+							</div>
+							<div class="inquiry-activity-option" data-for="medium" data-for-as-number='2'>
+								<div class="option-image"></div>
+								<div class="option-label">보통이에요</div>
+							</div>
+							<div class="inquiry-activity-option" data-for="hard" data-for-as-number='3'>
+								<div class="option-image"></div>
+								<div class="option-label">적극적으로요</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section" data-page="1">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="visual-que-person visual-que-body-fat" data-step="2" for="bodyfat-current"></div>
+						<div class="inquiry-title">현재 체지방률을 아시나요?</div>
+						<div class="inquiry-num-input" for="bodyfat-current">
+							<span class="inquiry-num-input-value">20</span
+							><span class="inquiry-num-input-unit">%</span>
+						</div>
+						<div class="slider-container">
+							<input type="range" min="0" max="50" value="20" step="0.1"
+								class="slider slider-bodyfat-current" for="bodyfat-current">
+						</div>
+						<div class="inquiry-desc text-secondary" for="bodyfat-current"></div>
+						<div class="link-section">
+							<a href="#" class="link-prev link-secondary">
+								<i class="fas fa-angle-left"></i>
+								뒤로
+							</a>
+							<a href="#" class="link-next">
+								입력했어요!
+								<i class="fas fa-angle-right"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section" data-page="2">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="visual-que-person visual-que-body-fat" data-step="2" for="bodyfat-target"></div>
+						<div class="inquiry-title">목표 체지방률은요?</div>
+						<div class="inquiry-num-input" for="bodyfat-target">
+							<span class="inquiry-num-input-value">20</span
+							><span class="inquiry-num-input-unit">%</span
+							><span class="inquiry-num-input-diff">-20.0%</span>
+						</div>
+						<div class="slider-container">
+							<input type="range" min="0" max="50" value="20" step="0.1"
+								class="slider slider-bodyfat-target" for="bodyfat-target">
+						</div>
+						<div class="inquiry-desc text-secondary" for="bodyfat-target"></div>
+						<div class="link-section">
+							<a href="#" class="link-prev link-secondary">
+								<i class="fas fa-angle-left"></i>
+								뒤로
+							</a>
+							<a href="#" class="link-next">
+								입력했어요!
+								<i class="fas fa-angle-right"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section inquiry-section-full inquery-congrat" data-page="fin">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="scaled-icon">
+							<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" style="transform: scale(2)">
+								<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+								<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+							</svg>
+						</div>
+						<div class="inquiry-logo">FIT.ME</div>
+						<div class="inquiry-title">필요한 정보를 모두 입력하셨어요!</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="inquiry-section inquiry-section-full inquery-additional-action" data-page="fin-next">
+				<div class="inquiry-main-container">
+					<div class="inquiry inquiry-register inquiry-titled">
+						<div class="inquiry-logo">FIT.ME</div>
+						<div class="action-list">
+							<a href="report.html" class="action-entry action-report">
+								<div class="action-image"></div>
+								<div class="action-title">결과 보기</div>
+								<div class="action-desc">작성한 결과를 바탕으로 결과를 보여드릴게요.</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<div class="inquery-footer">
+				<div class="inquiry-indicator">
+					<div class="indicator-text">1 OF 4</div>
+					<div class="indicator-bar">
+						<div class="indicator-bar-filled"></div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+	
+	<!-- JS : Bootstrap -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+	<!-- JS : Custom -->
+	<script src="js/additional_info.js"></script>
+</body>
+</html>
