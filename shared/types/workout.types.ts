@@ -115,3 +115,74 @@ export interface Achievement {
   progress?: number;
   isCompleted?: boolean;
 }
+
+// Level Test Types
+
+export interface LevelTestCondition {
+  exerciseId: number;
+  exerciseName: string;
+  requiredWeight: number;
+  requiredReps: number;
+  requiredSets: number;
+}
+
+export interface LevelTest {
+  id: string;
+  userId: string;
+  bodyPartId: number;
+  currentLevel: number;
+  targetLevel: number;
+  conditions: LevelTestCondition;
+  status: 'PENDING' | 'IN_PROGRESS' | 'SUBMITTED' | 'APPROVED' | 'REJECTED';
+  workoutRecordId?: string;
+  videoUrl?: string;
+  submittedAt?: string;
+  reviewedAt?: string;
+  reviewComment?: string;
+  createdAt: string;
+}
+
+export interface StartLevelTestResponse {
+  levelTest: {
+    id: string;
+    targetLevel: number;
+    conditions: LevelTestCondition;
+  };
+}
+
+export interface SubmitLevelTestRequest {
+  workoutRecordId: string;
+  videoUrl?: string;
+}
+
+export interface SubmitLevelTestResponse {
+  success: boolean;
+  levelTest: {
+    id: string;
+    status: string;
+    submittedAt: string;
+  };
+  leveledUp?: boolean;
+  newLevel?: number;
+}
+
+// Enhanced Workout Record Response with Level Test Info
+
+export interface CreateWorkoutRecordResponse {
+  workout: WorkoutRecord;
+  expBreakdown: {
+    baseExp: number;
+    gradeBonus: number;
+    volumeBonus: number;
+    prBonus: number;
+    levelPenalty: number;
+    totalExp: number;
+  };
+  levelTestAvailable?: {
+    bodyPartId: number;
+    bodyPartName: string;
+    currentLevel: number;
+    targetLevel: number;
+    canStartTest: boolean;
+  };
+}

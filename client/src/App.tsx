@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { store, persistor } from './store/store';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { Login, Register, Home, CharacterCreate, Map, StageDetail } from './pages';
+import WorkoutRecord from './pages/WorkoutRecord';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +71,14 @@ function App() {
               element={
                 <ProtectedRoute requireAuth={true} redirectTo="/login">
                   <StageDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/workout/record"
+              element={
+                <ProtectedRoute requireAuth={true} redirectTo="/login">
+                  <WorkoutRecord />
                 </ProtectedRoute>
               }
             />

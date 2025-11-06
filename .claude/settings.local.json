@@ -23,7 +23,9 @@
       "Bash(docker exec:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(tasklist:*)"
+      "Bash(tasklist:*)",
+      "Bash(timeout 30 bash -c 'until docker-compose ps | grep -q \"\"Up\"\"; do sleep 2; done')",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
