@@ -19,37 +19,29 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate
+        loading={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>}
+        persistor={persistor}
+      >
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
           <Routes>
             {/* Public routes - 로그인하지 않은 사용자만 접근 가능 */}
-            <Route
-              path="/login"
-              element={
-                <ProtectedRoute requireAuth={false} redirectTo="/">
-                  <Login />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <ProtectedRoute requireAuth={false} redirectTo="/">
-                  <Register />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
             {/* Protected routes - 로그인한 사용자만 접근 가능 */}
             <Route
-              path="/"
+              path="/dashboard"
               element={
                 <ProtectedRoute requireAuth={true} redirectTo="/login">
                   <Home />
                 </ProtectedRoute>
               }
             />
+
+            {/* Root redirect to login */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route
               path="/character/create"
               element={
@@ -84,7 +76,7 @@ function App() {
             />
 
             {/* Catch all - 404 redirect */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>

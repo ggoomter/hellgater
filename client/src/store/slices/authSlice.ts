@@ -21,10 +21,10 @@ interface AuthState {
 const initialState: AuthState = {
   user: null,
   tokens: {
-    accessToken: localStorage.getItem('accessToken'),
-    refreshToken: localStorage.getItem('refreshToken'),
+    accessToken: null,
+    refreshToken: null,
   },
-  isAuthenticated: !!localStorage.getItem('accessToken'),
+  isAuthenticated: false,
   isLoading: false,
   error: null,
 };
@@ -46,20 +46,14 @@ const authSlice = createSlice({
       state.tokens.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
       state.error = null;
-
-      // LocalStorage에 저장
-      localStorage.setItem('accessToken', action.payload.accessToken);
-      localStorage.setItem('refreshToken', action.payload.refreshToken);
+      // Redux Persist가 자동으로 localStorage에 저장
     },
     logout: (state) => {
       state.user = null;
       state.tokens.accessToken = null;
       state.tokens.refreshToken = null;
       state.isAuthenticated = false;
-
-      // LocalStorage에서 제거
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      // Redux Persist가 자동으로 localStorage에서 제거
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;

@@ -15,10 +15,20 @@ export const apiClient = axios.create({
 // Request Interceptor - 토큰 자동 첨부
 apiClient.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('accessToken');
+    // Redux Persist에서 토큰 읽기
+    try {
+      const persistedState = localStorage.getItem('persist:hellgater-root');
+      if (persistedState) {
+        const state = JSON.parse(persistedState);
+        const authState = JSON.parse(state.auth || '{}');
+        const accessToken = authState.tokens?.accessToken;
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+        if (accessToken) {
+          config.headers.Authorization = `Bearer ${accessToken}`;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to get access token from Redux Persist:', error);
     }
 
     return config;
@@ -40,7 +50,18 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const refreshToken = localStorage.getItem('refreshToken');
+      // Redux Persist에서 refreshToken 읽기
+      let refreshToken = null;
+      try {
+        const persistedState = localStorage.getItem('persist:hellgater-root');
+        if (persistedState) {
+          const state = JSON.parse(persistedState);
+          const authState = JSON.parse(state.auth || '{}');
+          refreshToken = authState.tokens?.refreshToken;
+        }
+      } catch (err) {
+        console.error('Failed to get refresh token:', err);
+      }
 
       if (refreshToken) {
         try {
@@ -53,8 +74,9 @@ apiClient.interceptors.response.use(
           if (response.data.success && response.data.data) {
             const { accessToken } = response.data.data;
 
-            // 새 토큰 저장
-            localStorage.setItem('accessToken', accessToken);
+            // 새 토큰은 Redux action을 통해 저장해야 함
+            // 여기서는 임시로 localStorage에 직접 저장하지 않음
+            // TODO: Redux store에 직접 dispatch
 
             // 원래 요청 재시도
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
@@ -62,13 +84,13 @@ apiClient.interceptors.response.use(
           }
         } catch (refreshError) {
           // 토큰 갱신 실패 - 로그아웃 처리
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
+          console.error('Token refresh failed, redirecting to login');
           window.location.href = '/login';
           return Promise.reject(refreshError);
         }
       } else {
         // Refresh Token이 없으면 로그인 페이지로
+        console.log('No refresh token found, redirecting to login');
         window.location.href = '/login';
       }
     }

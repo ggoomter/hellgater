@@ -45,16 +45,16 @@ export function useLogin() {
         console.log('🔍 Checking if character exists...');
         const character = await characterAPI.getMyCharacter();
         console.log('✅ Character exists:', character);
-        // 캐릭터 있음 -> 홈으로
-        navigate('/');
+        // 캐릭터 있음 -> 대시보드로
+        navigate('/dashboard');
       } catch (error: any) {
         console.log('ℹ️ No character found:', error?.response?.status);
         // 캐릭터 없음 (404) -> 캐릭터 생성으로
         if (error?.response?.status === 404) {
           navigate('/character/create');
         } else {
-          // 다른 에러 -> 일단 홈으로
-          navigate('/');
+          // 다른 에러 -> 일단 대시보드로
+          navigate('/dashboard');
         }
       }
     },

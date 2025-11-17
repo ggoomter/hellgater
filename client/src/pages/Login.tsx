@@ -33,6 +33,7 @@ export default function Login() {
     isError: loginMutation.isError,
     data: loginMutation.data,
     error: loginMutation.error,
+    errorMessage: (loginMutation.error as any)?.response?.data?.error?.message,
   });
 
   return (
@@ -68,8 +69,8 @@ export default function Login() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <p className="text-red-200 text-sm">
-                {(loginMutation.error as any)?.response?.data?.error?.message ||
+              <p className="text-red-200 text-sm font-semibold">
+                ❌ {(loginMutation.error as any)?.response?.data?.error?.message ||
                   '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.'}
               </p>
             </motion.div>
@@ -186,11 +187,6 @@ export default function Login() {
               size="lg"
               fullWidth
               isLoading={loginMutation.isPending}
-              onClick={(e) => {
-                console.log('🟣 Button onClick triggered');
-                e.preventDefault();
-                handleSubmit(e as any);
-              }}
             >
               로그인
             </Button>

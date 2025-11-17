@@ -25,7 +25,18 @@
       "Bash(findstr:*)",
       "Bash(tasklist:*)",
       "Bash(timeout 30 bash -c 'until docker-compose ps | grep -q \"\"Up\"\"; do sleep 2; done')",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm test)",
+      "Bash(npm test:*)",
+      "Bash(timeout /t 10 /nobreak)",
+      "Bash(nul)",
+      "Bash(copy \"G:\\ai_coding\\hellgater\\레퍼런스\\신체부위\\images.jpg\" \"G:\\ai_coding\\hellgater\\client\\public\\images\\body-diagram.jpg\")",
+      "Bash(wsl --shutdown)"
     ],
     "deny": [],
     "ask": []

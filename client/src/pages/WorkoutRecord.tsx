@@ -5,6 +5,8 @@ import { useAvailableLevelTests } from '../hooks/useLevelTest';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import Card from '../components/common/Card';
+import BodyPartSelector from '../components/workout/BodyPartSelector';
+import ExerciseSelector from '../components/workout/ExerciseSelector';
 
 const WorkoutRecord = () => {
   const navigate = useNavigate();
@@ -15,7 +17,10 @@ const WorkoutRecord = () => {
 
   // Form state
   const [formData, setFormData] = useState({
-    exerciseId: 2, // 벤치프레스 (임시)
+    bodyPartId: null as number | null,
+    bodyPartName: '',
+    exerciseId: null as number | null,
+    exerciseName: '',
     sets: 3,
     reps: 10,
     weight: 60,
@@ -37,15 +42,21 @@ const WorkoutRecord = () => {
       oneRM,
       estimatedExp,
     });
-  }, [formData.weight, formData.reps, formData.sets, calculate, estimate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.weight, formData.reps, formData.sets]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!formData.exerciseId || !formData.bodyPartName) {
+      alert('부위와 운동 종목을 선택해주세요');
+      return;
+    }
+
     try {
       const result = await createWorkout.mutateAsync({
         exerciseId: formData.exerciseId,
-        bodyPart: '가슴', // 임시
+        bodyPart: formData.bodyPartName,
         sets: formData.sets,
         reps: formData.reps,
         weight: formData.weight,
@@ -63,7 +74,7 @@ const WorkoutRecord = () => {
       }
 
       // 성공 후 홈으로 이동
-      navigate('/');
+      navigate('/dashboard');
     } catch (error: any) {
       console.error('❌ Failed to create workout:', error);
       alert(error.response?.data?.message || '운동 기록 생성에 실패했습니다.');
@@ -74,6 +85,24 @@ const WorkoutRecord = () => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }));
+  };
+
+  const handleSelectBodyPart = (bodyPartId: number, bodyPartName: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      bodyPartId,
+      bodyPartName,
+      exerciseId: null, // 부위 변경 시 운동 선택 초기화
+      exerciseName: '',
+    }));
+  };
+
+  const handleSelectExercise = (exerciseId: number, exerciseName: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      exerciseId,
+      exerciseName,
     }));
   };
 
@@ -117,17 +146,29 @@ const WorkoutRecord = () => {
           <div className="p-6">
             <h2 className="text-xl font-bold text-white mb-4">운동 정보 입력</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Exercise Selection (임시로 고정) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">운동 종목</label>
-                <div className="bg-gray-700/50 rounded-lg p-3">
-                  <p className="text-white">벤치프레스 (가슴)</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    * 실제 앱에서는 부위와 운동을 선택할 수 있습니다
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Body Part Selection */}
+              <BodyPartSelector
+                onSelectBodyPart={handleSelectBodyPart}
+                selectedBodyPartId={formData.bodyPartId}
+              />
+
+              {/* Exercise Selection */}
+              <ExerciseSelector
+                bodyPartId={formData.bodyPartId}
+                selectedExerciseId={formData.exerciseId}
+                onSelectExercise={handleSelectExercise}
+              />
+
+              {/* 선택된 운동 표시 */}
+              {formData.exerciseName && (
+                <div className="bg-primary-500/10 border border-primary-500/30 rounded-lg p-3">
+                  <p className="text-sm text-gray-400">선택된 운동</p>
+                  <p className="text-white font-semibold">
+                    {formData.exerciseName} ({formData.bodyPartName})
                   </p>
                 </div>
-              </div>
+              )}
 
               {/* Weight */}
               <div>
@@ -188,10 +229,16 @@ const WorkoutRecord = () => {
                 type="submit"
                 variant="primary"
                 fullWidth
-                disabled={createWorkout.isPending}
+                disabled={createWorkout.isPending || !formData.exerciseId}
               >
                 {createWorkout.isPending ? '기록 중...' : '운동 기록 저장'}
               </Button>
+
+              {!formData.exerciseId && (
+                <p className="text-xs text-gray-400 text-center -mt-2">
+                  부위와 운동을 선택하면 저장할 수 있습니다
+                </p>
+              )}
             </form>
           </div>
         </Card>
@@ -226,7 +273,7 @@ const WorkoutRecord = () => {
         {/* Back Button */}
         <div className="mt-6 text-center">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="text-gray-400 hover:text-white transition-colors"
           >
             ← 홈으로 돌아가기
