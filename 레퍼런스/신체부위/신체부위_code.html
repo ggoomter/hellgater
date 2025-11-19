@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Body Selector - Improved Hair</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            
+            /* 근육 색상 */
+            --muscle-base: #404040; 
+            --muscle-stroke: #121212; 
+            
+            /* 피부톤 */
+            --skin-base: #888;
+            
+            /* 머리카락 색상 - 배경과 구분되도록 약간 밝은 차콜색 변경 */
+            --hair-color: #4a4a4a;
+            --hair-stroke: #111111;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { margin-bottom: 10px; }
+        p { color: #888; margin-bottom: 30px; }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .card h3 { color: #aaa; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+        svg {
+            height: 400px;
+            width: auto;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+        }
+
+        .muscle-part {
+            fill: var(--muscle-base);
+            stroke: var(--muscle-stroke); 
+            stroke-width: 2px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        /* 남성 컬러 (파랑) */
+        .male-svg { --hover-color: #00e5ff; --selected-color: #2979ff; }
+        
+        /* 여성 컬러 (빨강) */
+        .female-svg { --hover-color: #ff4081; --selected-color: #f50057; }
+
+        .muscle-part:hover {
+            fill: var(--hover-color);
+            filter: drop-shadow(0 0 6px var(--hover-color));
+        }
+
+        .muscle-part.selected {
+            fill: var(--selected-color);
+            stroke: #fff;
+            stroke-width: 1.5px;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px var(--selected-color));
+        }
+
+        .static-part {
+            fill: var(--skin-base);
+            pointer-events: none;
+        }
+        
+        /* 머리카락 스타일 개선 */
+        .hair-part {
+            fill: var(--hair-color);
+            stroke: var(--hair-stroke);
+            stroke-width: 1px;
+            pointer-events: none;
+        }
+
+        .face-feature { fill: rgba(255,255,255,0.9); pointer-events: none; }
+        
+        /* 귀 디테일 선 */
+        .ear-line { 
+            fill: none; 
+            stroke: #444; 
+            stroke-width: 1.5; 
+            stroke-linecap: round; 
+            pointer-events: none; 
+        }
+
+        #log-container {
+            position: fixed;
+            bottom: 20px;
+            background: #222;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #444;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>FITNESS BODY SELECTOR</h1>
+    <p>머리카락 및 귀 디테일 최종 수정 (가시성 개선)</p>
+
+    <div class="container">
+        <!-- 1. 남성 앞면 -->
+        <div class="card">
+            <h3>Male Front</h3>
+            <svg viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg" class="male-svg">
+                <!-- 귀 -->
+                <circle cx="76" cy="35" r="5" class="static-part" />
+                <path d="M77 33 Q74 35 77 38" class="ear-line" />
+                <circle cx="124" cy="35" r="5" class="static-part" />
+                <path d="M123 33 Q126 35 123 38" class="ear-line" />
+
+                <!-- 얼굴형 -->
+                <circle cx="100" cy="35" r="20" class="static-part" />
+                
+                <!-- [수정됨] 남성 앞머리 -->
+                <!-- 이마를 너무 많이 까서 탈모처럼 보이지 않게 라인을 내림 -->
+                <path d="M76 35 L76 28 Q76 10 100 8 Q124 10 124 28 L124 35 Q112 24 100 26 Q88 24 76 35 Z" class="hair-part" />
+                
+                <!-- 이목구비 -->
+                <circle cx="94" cy="38" r="2" class="face-feature" />
+                <circle cx="106" cy="38" r="2" class="face-feature" />
+                <path d="M96 48 Q100 51 104 48" stroke="#fff" stroke-width="1.5" fill="none" />
+
+                <!-- 신체 (기존 유지) -->
+                <circle cx="40" cy="200" r="8" class="static-part" />
+                <circle cx="160" cy="200" r="8" class="static-part" />
+                <path d="M55 340 L85 340 L90 355 L50 355 Z" class="static-part" />
+                <path d="M115 340 L145 340 L150 355 L110 355 Z" class="static-part" />
+
+                <!-- 근육 패스 -->
+                <path id="m-f-traps" class="muscle-part" d="M85 55 L115 55 L130 70 L70 70 Z" />
+                <path id="m-f-chest" class="muscle-part" d="M70 70 L130 70 L125 115 L100 120 L75 115 Z" />
+                <path id="m-f-delt-l" class="muscle-part" d="M130 70 L160 75 L155 110 L125 105 Z" />
+                <path id="m-f-delt-r" class="muscle-part" d="M70 70 L40 75 L45 110 L75 105 Z" />
+                <path id="m-f-bicep-l" class="muscle-part" d="M155 110 L160 145 L135 145 L130 110 Z" />
+                <path id="m-f-bicep-r" class="muscle-part" d="M45 110 L40 145 L65 145 L70 110 Z" />
+                <path id="m-f-forearm-l" class="muscle-part" d="M160 145 L165 190 L145 195 L135 145 Z" />
+                <path id="m-f-forearm-r" class="muscle-part" d="M40 145 L35 190 L55 195 L65 145 Z" />
+                <path id="m-f-abs" class="muscle-part" d="M75 115 L125 115 L125 170 L75 170 Z" />
+                <path id="m-f-quad-l" class="muscle-part" d="M100 170 L135 170 L135 260 L105 260 Z" />
+                <path id="m-f-quad-r" class="muscle-part" d="M100 170 L65 170 L65 260 L95 260 Z" />
+                <path id="m-f-calf-l" class="muscle-part" d="M105 260 L135 260 L130 340 L110 340 Z" />
+                <path id="m-f-calf-r" class="muscle-part" d="M95 260 L65 260 L70 340 L90 340 Z" />
+            </svg>
+        </div>
+
+        <!-- 2. 남성 뒷면 -->
+        <div class="card">
+            <h3>Male Back</h3>
+            <svg viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg" class="male-svg">
+                <!-- 귀 살짝 보임 -->
+                <circle cx="76" cy="35" r="5" class="static-part" />
+                <circle cx="124" cy="35" r="5" class="static-part" />
+
+                <!-- 머리 (피부) -->
+                <circle cx="100" cy="35" r="20" class="static-part" />
+                
+                <!-- [수정됨] 남성 뒷머리 -->
+                <!-- 두상 전체를 덮고 목덜미(네이프) 라인까지 내려옴 -->
+                <path d="M75 35 L75 28 Q75 8 100 8 Q125 8 125 28 L125 35 L120 50 Q100 55 80 50 L75 35 Z" class="hair-part" />
+
+                <!-- 신체 -->
+                <circle cx="40" cy="200" r="8" class="static-part" />
+                <circle cx="160" cy="200" r="8" class="static-part" />
+                <path d="M55 340 L85 340 L90 355 L50 355 Z" class="static-part" />
+                <path d="M115 340 L145 340 L150 355 L110 355 Z" class="static-part" />
+
+                <!-- 근육 패스 -->
+                <path id="m-b-traps" class="muscle-part" d="M85 55 L115 55 L125 80 L75 80 Z" />
+                <path id="m-b-delt-l" class="muscle-part" d="M130 70 L160 75 L155 110 L125 105 Z" />
+                <path id="m-b-delt-r" class="muscle-part" d="M70 70 L40 75 L45 110 L75 105 Z" />
+                <path id="m-b-lats" class="muscle-part" d="M75 80 L125 80 L115 140 L85 140 Z" />
+                <path id="m-b-lowerback" class="muscle-part" d="M85 140 L115 140 L115 170 L85 170 Z" />
+                <path id="m-b-tricep-l" class="muscle-part" d="M155 110 L160 145 L135 145 L130 110 Z" />
+                <path id="m-b-tricep-r" class="muscle-part" d="M45 110 L40 145 L65 145 L70 110 Z" />
+                <path id="m-b-forearm-l" class="muscle-part" d="M160 145 L165 190 L145 195 L135 145 Z" />
+                <path id="m-b-forearm-r" class="muscle-part" d="M40 145 L35 190 L55 195 L65 145 Z" />
+                <path id="m-b-glutes" class="muscle-part" d="M85 170 L115 170 L135 200 L100 210 L65 200 Z" />
+                <path id="m-b-ham-l" class="muscle-part" d="M100 210 L135 200 L135 260 L105 260 Z" />
+                <path id="m-b-ham-r" class="muscle-part" d="M100 210 L65 200 L65 260 L95 260 Z" />
+                <path id="m-b-calf-l" class="muscle-part" d="M105 260 L135 260 L130 340 L110 340 Z" />
+                <path id="m-b-calf-r" class="muscle-part" d="M95 260 L65 260 L70 340 L90 340 Z" />
+            </svg>
+        </div>
+
+        <!-- 3. 여성 앞면 -->
+        <div class="card">
+            <h3>Female Front</h3>
+            <svg viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg" class="female-svg">
+                <!-- 귀 -->
+                <circle cx="78" cy="40" r="4" class="static-part" />
+                <path d="M79 38 Q76 40 79 43" class="ear-line" />
+                <circle cx="122" cy="40" r="4" class="static-part" />
+                <path d="M121 38 Q124 40 121 43" class="ear-line" />
+
+                <!-- 얼굴형 -->
+                <circle cx="100" cy="40" r="18" class="static-part" />
+                
+                <!-- [수정됨] 여성 앞머리 -->
+                <!-- 똥머리(Bun) 더 선명하게 -->
+                <circle cx="100" cy="15" r="12" class="hair-part" /> 
+                <!-- 얼굴을 감싸는 앞머리 스타일 -->
+                <path d="M76 40 Q72 15 100 15 Q128 15 124 40 Q112 28 100 28 Q88 28 76 40 Z" class="hair-part" />
+
+                <!-- 이목구비 -->
+                <circle cx="94" cy="42" r="1.5" class="face-feature" />
+                <circle cx="106" cy="42" r="1.5" class="face-feature" />
+                <path d="M97 50 Q100 52 103 50" stroke="#fff" stroke-width="1" fill="none" />
+
+                <!-- 신체 -->
+                <circle cx="50" cy="200" r="7" class="static-part" />
+                <circle cx="150" cy="200" r="7" class="static-part" />
+                <path d="M60 335 L85 335 L88 350 L55 350 Z" class="static-part" />
+                <path d="M115 335 L140 335 L145 350 L112 350 Z" class="static-part" />
+
+                <!-- 근육 패스 -->
+                <path id="f-f-delt-l" class="muscle-part" d="M125 65 Q145 70 145 100 Q135 100 125 95 Z" />
+                <path id="f-f-delt-r" class="muscle-part" d="M75 65 Q55 70 55 100 Q65 100 75 95 Z" />
+                <path id="f-f-chest" class="muscle-part" d="M75 65 L125 65 L120 100 Q100 125 80 100 Z" />
+                <path id="f-f-abs" class="muscle-part" d="M80 100 Q100 125 120 100 L125 150 Q100 155 75 150 Z" />
+                <path id="f-f-bicep-l" class="muscle-part" d="M145 100 Q150 130 145 145 L130 145 L125 95 Z" />
+                <path id="f-f-bicep-r" class="muscle-part" d="M55 100 Q50 130 55 145 L70 145 L75 95 Z" />
+                <path id="f-f-forearm-l" class="muscle-part" d="M145 145 Q150 180 145 195 L135 195 L130 145 Z" />
+                <path id="f-f-forearm-r" class="muscle-part" d="M55 145 Q50 180 55 195 L65 195 L70 145 Z" />
+                <path id="f-f-quad-l" class="muscle-part" d="M100 155 L125 150 Q140 180 135 250 L105 250 Z" />
+                <path id="f-f-quad-r" class="muscle-part" d="M100 155 L75 150 Q60 180 65 250 L95 250 Z" />
+                <path id="f-f-calf-l" class="muscle-part" d="M105 250 L135 250 Q130 300 125 335 L110 335 Z" />
+                <path id="f-f-calf-r" class="muscle-part" d="M95 250 L65 250 Q70 300 75 335 L90 335 Z" />
+            </svg>
+        </div>
+
+        <!-- 4. 여성 뒷면 -->
+        <div class="card">
+            <h3>Female Back</h3>
+            <svg viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg" class="female-svg">
+                <!-- 귀 -->
+                <circle cx="78" cy="40" r="4" class="static-part" />
+                <circle cx="122" cy="40" r="4" class="static-part" />
+
+                <!-- 머리 -->
+                <circle cx="100" cy="40" r="18" class="static-part" />
+                
+                <!-- [수정됨] 여성 뒷머리 -->
+                <circle cx="100" cy="15" r="12" class="hair-part" /> <!-- 똥머리 -->
+                <!-- 뒷머리가 머리 전체와 목을 덮음 -->
+                <path d="M75 40 Q72 15 100 15 Q128 15 125 40 Q120 60 100 60 Q80 60 75 40 Z" class="hair-part" />
+
+                <!-- 신체 -->
+                <circle cx="50" cy="200" r="7" class="static-part" />
+                <circle cx="150" cy="200" r="7" class="static-part" />
+                <path d="M60 335 L85 335 L88 350 L55 350 Z" class="static-part" />
+                <path d="M115 335 L140 335 L145 350 L112 350 Z" class="static-part" />
+
+                <!-- 근육 패스 -->
+                <path id="f-b-upperback" class="muscle-part" d="M80 65 L120 65 L115 105 L85 105 Z" />
+                <path id="f-b-delt-l" class="muscle-part" d="M125 65 Q145 70 145 100 Q135 100 125 95 Z" />
+                <path id="f-b-delt-r" class="muscle-part" d="M75 65 Q55 70 55 100 Q65 100 75 95 Z" />
+                <path id="f-b-lowerback" class="muscle-part" d="M85 105 L115 105 L120 150 L80 150 Z" />
+                <path id="f-b-tricep-l" class="muscle-part" d="M145 100 Q150 130 145 145 L130 145 L125 95 Z" />
+                <path id="f-b-tricep-r" class="muscle-part" d="M55 100 Q50 130 55 145 L70 145 L75 95 Z" />
+                <path id="f-b-forearm-l" class="muscle-part" d="M145 145 Q150 180 145 195 L135 195 L130 145 Z" />
+                <path id="f-b-forearm-r" class="muscle-part" d="M55 145 Q50 180 55 195 L65 195 L70 145 Z" />
+                <path id="f-b-glutes" class="muscle-part" d="M80 150 L120 150 Q140 170 130 200 L100 210 L70 200 Q60 170 80 150 Z" />
+                <path id="f-b-ham-l" class="muscle-part" d="M100 210 L130 200 Q135 230 130 260 L105 260 Z" />
+                <path id="f-b-ham-r" class="muscle-part" d="M100 210 L70 200 Q65 230 70 260 L95 260 Z" />
+                <path id="f-b-calf-l" class="muscle-part" d="M105 260 L130 260 Q130 300 125 335 L110 335 Z" />
+                <path id="f-b-calf-r" class="muscle-part" d="M95 260 L70 260 Q70 300 75 335 L90 335 Z" />
+            </svg>
+        </div>
+    </div>
+
+    <div id="log-container">
+        선택된 부위: <span id="selected-list">없음</span>
+    </div>
+
+    <script>
+        const selectedParts = new Set();
+        const listElement = document.getElementById('selected-list');
+
+        document.querySelectorAll('.muscle-part').forEach(part => {
+            part.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                const partId = this.id;
+                
+                if (selectedParts.has(partId)) {
+                    selectedParts.delete(partId);
+                } else {
+                    selectedParts.add(partId);
+                }
+                
+                if (selectedParts.size === 0) {
+                    listElement.textContent = "없음";
+                } else {
+                    listElement.textContent = Array.from(selectedParts).join(', ');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

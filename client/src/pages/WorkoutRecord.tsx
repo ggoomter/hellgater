@@ -19,6 +19,7 @@ const WorkoutRecord = () => {
   const [formData, setFormData] = useState({
     bodyPartId: null as number | null,
     bodyPartName: '',
+    view: null as 'front' | 'back' | null,
     exerciseId: null as number | null,
     exerciseName: '',
     sets: 3,
@@ -88,11 +89,12 @@ const WorkoutRecord = () => {
     }));
   };
 
-  const handleSelectBodyPart = (bodyPartId: number, bodyPartName: string) => {
+  const handleSelectBodyPart = (bodyPartId: number, bodyPartName: string, view: 'front' | 'back') => {
     setFormData((prev) => ({
       ...prev,
       bodyPartId,
       bodyPartName,
+      view,
       exerciseId: null, // 부위 변경 시 운동 선택 초기화
       exerciseName: '',
     }));
@@ -156,6 +158,7 @@ const WorkoutRecord = () => {
               {/* Exercise Selection */}
               <ExerciseSelector
                 bodyPartId={formData.bodyPartId}
+                view={formData.view}
                 selectedExerciseId={formData.exerciseId}
                 onSelectExercise={handleSelectExercise}
               />

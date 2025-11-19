@@ -36,7 +36,9 @@
       "Bash(timeout /t 10 /nobreak)",
       "Bash(nul)",
       "Bash(copy \"G:\\ai_coding\\hellgater\\레퍼런스\\신체부위\\images.jpg\" \"G:\\ai_coding\\hellgater\\client\\public\\images\\body-diagram.jpg\")",
-      "Bash(wsl --shutdown)"
+      "Bash(wsl --shutdown)",
+      "Bash(node convert-md-to-ts.js:*)",
+      "Bash(copy \"G:\\ai_coding\\hellgater\\client\\src\\data\\exercises\\04-arm-restructured.md\" \"G:\\ai_coding\\hellgater\\client\\src\\data\\exercises\\04-arm.md\")"
     ],
     "deny": [],
     "ask": []
