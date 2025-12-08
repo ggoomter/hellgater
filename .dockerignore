@@ -4,18 +4,23 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Build outputs
 dist
 build
 .next
 out
+*.tsbuildinfo
 
 # Environment files
 .env
 .env.local
 .env.*.local
 **/.env
+.env.example
 
 # IDE
 .vscode
@@ -23,36 +28,77 @@ out
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
 
 # OS
 .DS_Store
 Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 
 # Git
 .git
 .gitignore
+.gitattributes
+.github
 
 # Docker
-Dockerfile
-docker-compose.yml
+Dockerfile*
+docker-compose*.yml
 .dockerignore
 
 # Logs
 logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Testing
 coverage
 .nyc_output
+*.lcov
+.jest
 
 # Temporary files
 tmp
 temp
 *.tmp
+*.temp
+.cache
+
+# Windows-specific problematic files
+**/${CLIENT_PORT*
+**/${POSTGRES_PORT*
+**/${SERVER_PORT*
+**/${PORT*
 
 # Prisma
 server/prisma/migrations
+**/migrations
 
-# Documentation
+# Documentation (README는 포함)
 *.md
 !README.md
+!DOCKER_GUIDE.md
+!GETTING_STARTED.md
+!QUICK_START.md
+
+# 기타
+레퍼런스
+content-preview
+원페이지리포트
+체지방별몸매이미지
+*.py
+*.bat
+*.xlsx
+*.pptx
+*.pdf
+*.jpg
+*.png
+*.gif
+*.svg

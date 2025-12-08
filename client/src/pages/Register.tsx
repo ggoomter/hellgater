@@ -78,18 +78,44 @@ export default function Register() {
           </div>
 
           {/* 에러 메시지 */}
-          {registerMutation.isError && (
-            <motion.div
-              className="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-lg"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
-              <p className="text-red-200 text-sm">
-                {(registerMutation.error as any)?.response?.data?.error?.message ||
-                  '회원가입에 실패했습니다. 다시 시도해주세요.'}
-              </p>
-            </motion.div>
-          )}
+          {registerMutation.isError && (() => {
+            const error = registerMutation.error as any;
+            let errorMessage = '회원가입에 실패했습니다. 다시 시도해주세요.';
+            
+            // 백엔드에서 온 에러 메시지 추출
+            if (error?.response?.data?.error?.message) {
+              errorMessage = error.response.data.error.message;
+            } else if (error?.response?.data?.message) {
+              errorMessage = error.response.data.message;
+            } else if (error?.message) {
+              errorMessage = error.message;
+            } else if (error?.response?.status === 409) {
+              errorMessage = '이미 사용 중인 이메일 또는 사용자명입니다.';
+            } else if (error?.response?.status === 400) {
+              errorMessage = '입력한 정보를 확인해주세요.';
+            } else if (error?.response?.status === 500) {
+              errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+            } else if (error?.code === 'ECONNABORTED' || error?.message?.includes('timeout')) {
+              errorMessage = '요청 시간이 초과되었습니다. 네트워크 연결을 확인해주세요.';
+            } else if (error?.code === 'ERR_NETWORK' || !error?.response) {
+              errorMessage = '네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.';
+            }
+            
+            return (
+              <motion.div
+                className="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-lg"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+              >
+                <p className="text-red-200 text-sm font-medium">{errorMessage}</p>
+                {import.meta.env.DEV && error?.response?.data?.error?.code && (
+                  <p className="text-red-300/60 text-xs mt-1">
+                    에러 코드: {error.response.data.error.code}
+                  </p>
+                )}
+              </motion.div>
+            );
+          })()}
 
           {/* 회원가입 폼 */}
           <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">

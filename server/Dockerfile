@@ -1,8 +1,8 @@
-# Server Dockerfile
+# Server Dockerfile (Development)
 FROM node:20-alpine
 
-# Install openssl for Prisma
-RUN apk add --no-cache openssl
+# Install openssl for Prisma and wget for health check
+RUN apk add --no-cache openssl wget
 
 # Set working directory
 WORKDIR /app
@@ -19,15 +19,19 @@ RUN npm install
 COPY server ./server
 COPY shared ./shared
 
-# Generate Prisma Client
-WORKDIR /app/server
-RUN npx prisma generate
+# Copy entrypoint script
+COPY server/scripts/docker-entrypoint.sh /app/server/scripts/docker-entrypoint.sh
+RUN chmod +x /app/server/scripts/docker-entrypoint.sh
 
-# Expose port
-EXPOSE 4000
+# Expose port (default 8200)
+EXPOSE ${PORT:-8200}
 
 # Set working directory back to app root
 WORKDIR /app
 
-# Start command will be in docker-compose
-CMD ["sh", "-c", "cd server && npm run dev"]
+# Health check (uses PORT env var, defaults to 8200)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost:${PORT:-8200}/health || exit 1
+
+# Start command will be in docker-compose (with auto-migration)
+CMD ["sh", "-c", "cd /app/server && npm run dev"]

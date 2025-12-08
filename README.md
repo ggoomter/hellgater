@@ -47,22 +47,61 @@ hellgater/
 
 ### 방법 1: Docker 사용 (권장) 🐳
 
-**가장 쉬운 방법! 환경 설정 불필요**
+**가장 쉬운 방법! 환경 설정 불필요, 어느 운영체제에서든 동일하게 실행**
+
+#### 빠른 시작
 
 ```bash
-# 1. Docker Desktop 설치 (https://www.docker.com/products/docker-desktop/)
+# 1. Docker Desktop 설치
+# Windows/Mac: https://www.docker.com/products/docker-desktop/
+# Linux: sudo apt-get install docker.io docker-compose
 
-# 2. 프로젝트 폴더로 이동
+# 2. 프로젝트 클론
+git clone https://github.com/yourusername/hellgater.git
 cd hellgater
 
-# 3. Docker로 실행
+# 3. 환경 변수 설정 (선택사항, 기본값으로도 실행 가능)
+cp .env.example .env
+
+# 4. Docker로 실행
 npm run docker:dev
 
-# 4. 브라우저에서 접속
-# http://localhost:3000
+# 5. 브라우저에서 접속
+# ⚠️ 주의: 포트 충돌 방지를 위해 비표준 포트 사용!
+# 프론트엔드: http://localhost:8100 (일반적: 3000)
+# 백엔드 API: http://localhost:8200 (일반적: 4000)
+# Health Check: http://localhost:8200/health
+# PostgreSQL: localhost:8300 (일반적: 5432)
+# 자세한 포트 설정: PORT_CONFIGURATION.md 참고
+
+# ✅ 자동화된 기능:
+# - 데이터베이스 마이그레이션 자동 실행 (수동 명령 불필요!)
+# - Prisma Client 자동 생성
+# - 개발 환경: 마이그레이션 파일이 없으면 자동으로 db push 실행
 ```
 
-자세한 내용은 **[📖 Docker 가이드](./DOCKER_GUIDE.md)** 참고
+#### 주요 Docker 명령어
+
+```bash
+# 개발 환경 실행
+npm run docker:dev              # 포그라운드 실행
+npm run docker:dev:build        # 재빌드 후 실행
+npm run docker:dev:down         # 중지 및 제거
+
+# 프로덕션 환경 실행
+npm run docker:prod            # 프로덕션 실행
+npm run docker:prod:build      # 프로덕션 재빌드
+npm run docker:prod:down       # 프로덕션 중지
+
+# 로그 확인
+npm run docker:logs            # 모든 서비스 로그
+docker-compose logs -f server  # 특정 서비스 로그
+
+# 정리
+npm run docker:clean           # 모든 컨테이너/볼륨 삭제
+```
+
+**자세한 내용은 [📖 Docker 가이드](./DOCKER_GUIDE.md) 참고**
 
 ### 방법 2: 로컬 개발 환경
 
