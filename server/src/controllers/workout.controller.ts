@@ -5,7 +5,9 @@ import { HttpError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
 import { rmAnalysisService } from '../services/rmAnalysis/rmAnalysisService.js';
 import { expCalculationService } from '../services/gameEngine/expCalculationService.js';
+import { calorieCalculationService } from '../services/gameEngine/calorieCalculationService.js';
 import { levelTestService } from '../services/gameEngine/levelTestService.js';
+import { levelUpService } from '../services/gameEngine/levelUpService.js';
 
 // Validation schemas
 
@@ -56,11 +58,23 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
     // 2. 사용자 정보 조회
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { weight: true, gender: true },
+      select: { weight: true, gender: true, birthdate: true },
     });
 
     if (!user || !user.weight || !user.gender) {
       throw new HttpError(400, '사용자 정보가 불완전합니다. 체중과 성별을 입력해주세요.');
+    }
+
+    // 나이 계산
+    let userAge: number | undefined;
+    if (user.birthdate) {
+      const today = new Date();
+      const birthDate = new Date(user.birthdate);
+      userAge = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        userAge--;
+      }
     }
 
     // 3. UserBodyPart 조회 (현재 레벨)
@@ -77,7 +91,7 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
       throw new HttpError(404, '신체 부위 정보를 찾을 수 없습니다');
     }
 
-    // 4. 1RM 분석
+    // 4. 1RM 분석 (운동 코드 및 나이 포함)
     const rmAnalysis = await rmAnalysisService.analyze({
       userId,
       exerciseId,
@@ -86,6 +100,8 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
       reps,
       userWeight: Number(user.weight),
       userGender: user.gender.toUpperCase(),
+      exerciseCode: exercise.code, // 운동 코드 전달 (더 정확한 계산을 위해)
+      userAge, // 나이 전달 (연령 조정용)
     });
 
     logger.info(`RM Analysis: 1RM=${rmAnalysis.calculated1RM}kg, Grade=${rmAnalysis.grade}, PR=${rmAnalysis.isPersonalRecord}`);
@@ -103,15 +119,20 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
 
     logger.info(`Exp Calculation: Total=${expResult.totalExp}, Breakdown=${JSON.stringify(expResult.breakdown)}`);
 
-    // 6. 칼로리 계산
-    const caloriesBurned = expCalculationService.calculateCalories(
+    // 6. 칼로리 계산 (개인화된 방법 사용)
+    const calorieResult = calorieCalculationService.calculate({
+      userWeight: Number(user.weight),
+      userAge,
+      userGender: user.gender.toUpperCase(),
+      exerciseType: exercise.code,
       sets,
       reps,
       weight,
-      Number(exercise.caloriePerRepKg)
-    );
+      exerciseIntensity: 5, // 기본값 (나중에 사용자 입력으로 받을 수 있음)
+    });
+    const caloriesBurned = calorieResult.totalCalories;
 
-    // 7. 트랜잭션으로 데이터 저장
+    // 7. 트랜잭션으로 데이터 저장 및 레벨업 체크
     const result = await prisma.$transaction(async (tx) => {
       // 7-1. WorkoutRecord 생성
       const workoutRecord = await tx.workoutRecord.create({
@@ -134,7 +155,52 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
         },
       });
 
-      // 7-2. UserBodyPart 경험치 추가
+      // 7-2. 현재 상태 조회 (레벨업 체크용)
+      const currentBodyPart = await tx.userBodyPart.findUnique({
+        where: {
+          userId_bodyPartId: {
+            userId,
+            bodyPartId: exercise.bodyPartId,
+          },
+        },
+      });
+
+      if (!currentBodyPart) {
+        throw new HttpError(404, '신체 부위 정보를 찾을 수 없습니다');
+      }
+
+      // 7-3. 경험치 추가 및 레벨업 체크
+      const oldLevel = currentBodyPart.level;
+      let currentExp = currentBodyPart.currentExp + expResult.totalExp;
+      let newLevel = oldLevel;
+      let levelsGained = 0;
+      const rewards: { skillPoints?: number; titles?: string[] } = {};
+
+      // 레벨업 체크 (여러 레벨 한번에 오를 수 있음)
+      while (true) {
+        const requiredExp = levelUpService.getRequiredExpForLevel(newLevel);
+        
+        if (currentExp >= requiredExp) {
+          currentExp -= requiredExp;
+          newLevel += 1;
+          levelsGained += 1;
+
+          // 레벨업 보상
+          if (newLevel % 5 === 0) {
+            rewards.skillPoints = (rewards.skillPoints || 0) + 1;
+          }
+          if (newLevel % 10 === 0) {
+            if (!rewards.titles) {
+              rewards.titles = [];
+            }
+            rewards.titles.push(`${newLevel}레벨 달성`);
+          }
+        } else {
+          break;
+        }
+      }
+
+      // 7-4. UserBodyPart 업데이트
       const updatedBodyPart = await tx.userBodyPart.update({
         where: {
           userId_bodyPartId: {
@@ -143,9 +209,8 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
           },
         },
         data: {
-          currentExp: {
-            increment: expResult.totalExp,
-          },
+          level: newLevel,
+          currentExp,
           lastWorkoutAt: new Date(),
           // max1RmWeight 업데이트 (PR인 경우)
           ...(rmAnalysis.isPersonalRecord && {
@@ -154,7 +219,7 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
         },
       });
 
-      // 7-3. Character 전체 경험치 추가 (부위별 경험치의 10%)
+      // 7-5. Character 전체 경험치 추가 및 레벨 업데이트
       const characterExpGain = Math.round(expResult.totalExp * 0.1);
       await tx.character.update({
         where: { userId },
@@ -165,7 +230,34 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
         },
       });
 
-      return { workoutRecord, updatedBodyPart };
+      // 레벨업이 발생한 경우 전체 레벨 재계산
+      if (levelsGained > 0) {
+        const allBodyParts = await tx.userBodyPart.findMany({
+          where: { userId },
+          select: { level: true },
+        });
+        
+        const totalLevel = Math.floor(
+          allBodyParts.reduce((sum, bp) => sum + bp.level, 0) / allBodyParts.length
+        );
+
+        await tx.character.update({
+          where: { userId },
+          data: { totalLevel },
+        });
+      }
+
+      return { 
+        workoutRecord, 
+        updatedBodyPart, 
+        levelUp: levelsGained > 0 ? {
+          didLevelUp: true,
+          oldLevel,
+          newLevel,
+          levelsGained,
+          rewards,
+        } : null,
+      };
     });
 
     logger.info(`Workout record created: ID=${result.workoutRecord.id}`);
@@ -210,6 +302,15 @@ export async function createWorkoutRecord(req: Request, res: Response, next: Nex
         createdAt: result.workoutRecord.createdAt.toISOString(),
       },
       expBreakdown: expResult.breakdown,
+      levelUp: result.levelUp ? {
+        didLevelUp: true,
+        oldLevel: result.levelUp.oldLevel,
+        newLevel: result.levelUp.newLevel,
+        levelsGained: result.levelUp.levelsGained,
+        bodyPartId: exercise.bodyPartId,
+        bodyPartName: updatedUserBodyPart?.bodyPart.nameKo || '',
+        rewards: result.levelUp.rewards,
+      } : undefined,
       levelTestAvailable: updatedUserBodyPart?.canTakeLevelTest
         ? {
             bodyPartId: exercise.bodyPartId,

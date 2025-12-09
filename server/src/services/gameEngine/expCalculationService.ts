@@ -197,13 +197,15 @@ class ExpCalculationService {
   }
 
   /**
-   * 칼로리 소모량 계산
+   * 칼로리 소모량 계산 (기본 방법 - 하위 호환성 유지)
    *
    * @param sets - 세트 수
    * @param reps - 반복 횟수
    * @param weight - 무게 (kg)
    * @param caloriePerRepKg - 운동별 칼로리 계수 (Exercise 테이블)
    * @returns 소모 칼로리 (kcal)
+   * 
+   * @deprecated 개인화된 칼로리 계산을 위해 calorieCalculationService 사용 권장
    */
   calculateCalories(
     sets: number,
