@@ -1,0 +1,240 @@
+{
+  "exercise": {
+    "id": 1,
+    "code": "bench_press",
+    "nameKo": "벤치프레스",
+    "nameEn": "Bench Press",
+    "bodyPart": "chest",
+    "category": "compound",
+    "difficulty": "intermediate",
+    "description": "벤치프레스는 가슴 운동의 대표적인 복합 운동입니다.\n\n**주요 타겟 근육:**\n- 대흉근 (Pectoralis Major)\n- 전면 삼각근 (Anterior Deltoid)\n- 삼두근 (Triceps)\n\n**효과:**\n- 가슴 근육 발달\n- 상체 밀기 힘 향상\n- 코어 안정성 강화\n\n**주의사항:**\n- 어깨를 항상 뒤로 당기고 견갑골을 고정\n- 발은 지면에 단단히 고정\n- 바벨은 가슴 중앙-하부에 터치\n- 손목은 일직선 유지",
+    "howTo": "**준비 자세:**\n1. 벤치에 눕고 눈이 바벨 바로 아래 오도록 위치\n2. 어깨 너비보다 약간 넓게 바벨을 잡기\n3. 견갑골을 뒤로 당기고 아래로 내림\n4. 가슴을 들어올려 아치 만들기\n5. 발은 지면에 단단히 고정\n\n**동작 실행:**\n1. 바벨을 랙에서 들어올려 가슴 위에 위치\n2. 천천히 바벨을 내리며 숨 들이마시기 (2-3초)\n3. 바벨이 가슴 중앙-하부에 살짝 터치\n4. 팔꿈치는 45도 각도 유지\n5. 발로 지면을 밀며 바벨을 밀어올리기\n6. 목표 횟수만큼 반복",
+    "videoUrl": "/content/exercises/bench-press/demo.mp4",
+    "thumbnailUrl": "/content/exercises/bench-press/thumbnail.jpg",
+    "caloriePerRepKg": 0.05
+  },
+
+  "skillTree": [
+    {
+      "id": 1,
+      "code": "bench_pushup",
+      "nameKo": "벤치 푸쉬업",
+      "tier": "beginner",
+      "level": 1,
+      "requiredLevel": 1,
+      "requiredReps": 10,
+      "requiredWeight": 0,
+      "prerequisiteSkills": [],
+      "description": "벤치프레스 전 기초 근력을 키우는 운동",
+      "unlockMessage": "가슴 근력의 기초를 다졌습니다!",
+      "iconUrl": "/skills/chest/bench_pushup.png",
+      "position": { "x": 1, "y": 0 }
+    },
+    {
+      "id": 2,
+      "code": "bench_press_15kg",
+      "nameKo": "벤치프레스 입문",
+      "tier": "silver",
+      "level": 2,
+      "requiredLevel": 3,
+      "requiredReps": 15,
+      "requiredWeight": 15,
+      "prerequisiteSkills": [1],
+      "description": "빈 바벨로 폼을 익히고 15kg 15회를 달성하세요",
+      "unlockMessage": "벤치프레스 폼을 마스터했습니다!",
+      "iconUrl": "/skills/chest/bench_press_bronze.png",
+      "position": { "x": 2, "y": 1 }
+    },
+    {
+      "id": 3,
+      "code": "bench_press_40kg",
+      "nameKo": "벤치프레스 중급",
+      "tier": "gold",
+      "level": 3,
+      "requiredLevel": 8,
+      "requiredReps": 10,
+      "requiredWeight": 40,
+      "prerequisiteSkills": [2],
+      "description": "체중의 절반 정도 무게로 안정적인 폼 유지",
+      "unlockMessage": "중급 벤치프레서가 되었습니다!",
+      "iconUrl": "/skills/chest/bench_press_silver.png",
+      "position": { "x": 3, "y": 2 }
+    },
+    {
+      "id": 4,
+      "code": "bench_press_1x_bodyweight",
+      "nameKo": "벤치프레스 고급 - 체중 1배",
+      "tier": "platinum",
+      "level": 4,
+      "requiredLevel": 15,
+      "requiredReps": 10,
+      "requiredWeight": 70,
+      "prerequisiteSkills": [3],
+      "description": "자신의 체중만큼 들어올리는 것은 고급자의 증표입니다",
+      "unlockMessage": "벤치프레스 마스터! 체중 1배를 달성했습니다!",
+      "iconUrl": "/skills/chest/bench_press_gold.png",
+      "position": { "x": 4, "y": 3 }
+    }
+  ],
+
+  "curriculumContent": {
+    "week": 15,
+    "modules": [
+      {
+        "id": "module-15-3",
+        "displayOrder": 3,
+        "moduleType": "exercise_demo",
+        "titleKo": "벤치프레스 완벽 가이드",
+        "titleEn": "Complete Bench Press Guide",
+        "description": "가슴 운동의 왕, 벤치프레스를 마스터하세요",
+        "estimatedTime": 8,
+        "expReward": 200,
+        "requiresCompletion": false,
+
+        "contentData": {
+          "exerciseId": 1,
+          "difficulty": "intermediate",
+          "targetMuscles": ["대흉근", "전면 삼각근", "삼두근"],
+          "equipment": ["바벨", "벤치", "랙"],
+
+          "chapters": [
+            { "time": 0, "title": "인트로" },
+            { "time": 10, "title": "준비 자세" },
+            { "time": 40, "title": "그립 잡는 법" },
+            { "time": 70, "title": "견갑골 세팅" },
+            { "time": 100, "title": "동작 실행" },
+            { "time": 140, "title": "흔한 실수 5가지" },
+            { "time": 200, "title": "안전 수칙" }
+          ],
+
+          "keyPoints": [
+            "어깨를 뒤로 당기고 견갑골 고정",
+            "팔꿈치는 45도 각도 유지",
+            "바벨은 가슴 중앙-하부에 터치",
+            "발로 지면을 밀며 올리기",
+            "손목은 일직선 유지"
+          ],
+
+          "commonMistakes": [
+            {
+              "mistake": "팔꿈치를 90도로 벌림",
+              "why": "어깨 관절에 과도한 부담",
+              "fix": "팔꿈치를 몸통 쪽으로 45도 각도로 유지"
+            },
+            {
+              "mistake": "바운싱 (가슴에 바벨 튕기기)",
+              "why": "부상 위험, 반동으로 무게 속임",
+              "fix": "가슴에 살짝 터치 후 멈췄다가 올리기"
+            },
+            {
+              "mistake": "엉덩이가 벤치에서 떨어짐",
+              "why": "허리 부상 위험",
+              "fix": "엉덩이 항상 벤치에 붙이기, 레그 드라이브 활용"
+            },
+            {
+              "mistake": "손목이 뒤로 꺾임",
+              "why": "손목 부상, 힘 전달 비효율",
+              "fix": "손목 일직선, 바가 손바닥 중심에 위치"
+            },
+            {
+              "mistake": "너무 빠른 속도",
+              "why": "근육 자극 부족, 통제력 상실",
+              "fix": "내릴 때 2-3초, 올릴 때 1-2초 속도 조절"
+            }
+          ],
+
+          "progression": [
+            { "level": "beginner", "description": "빈 바벨 (20kg) 15회 3세트" },
+            { "level": "intermediate", "description": "체중의 절반 10회 3세트" },
+            { "level": "advanced", "description": "체중 1배 5회 3세트" },
+            { "level": "expert", "description": "체중 1.5배 3회 3세트" }
+          ]
+        },
+
+        "videoUrl": "/content/exercises/bench-press/full-guide.mp4",
+        "thumbnailUrl": "/content/exercises/bench-press/thumbnail-guide.jpg",
+        "imageUrls": [
+          "/content/exercises/bench-press/setup-1.jpg",
+          "/content/exercises/bench-press/setup-2.jpg",
+          "/content/exercises/bench-press/execution-1.jpg",
+          "/content/exercises/bench-press/execution-2.jpg",
+          "/content/exercises/bench-press/mistakes-diagram.jpg"
+        ]
+      },
+
+      {
+        "id": "module-15-4",
+        "displayOrder": 4,
+        "moduleType": "quiz",
+        "titleKo": "벤치프레스 폼 체크 퀴즈",
+        "titleEn": "Bench Press Form Quiz",
+        "description": "올바른 벤치프레스 자세를 이해했는지 확인하세요",
+        "estimatedTime": 5,
+        "expReward": 150,
+        "requiresCompletion": true,
+        "hasQuiz": true,
+
+        "contentData": {
+          "questions": [
+            {
+              "id": 1,
+              "type": "multiple_choice",
+              "question": "벤치프레스 시 팔꿈치의 올바른 각도는?",
+              "options": [
+                { "id": "a", "text": "몸통에 완전히 붙임 (0도)" },
+                { "id": "b", "text": "몸통과 45도 각도" },
+                { "id": "c", "text": "몸통과 수직 (90도)" },
+                { "id": "d", "text": "상관없음, 편한 대로" }
+              ],
+              "correctAnswer": "b",
+              "explanation": "팔꿈치는 몸통과 45도 각도를 유지해야 어깨 관절에 부담을 덜 줍니다. 90도로 벌리면 어깨 부상 위험이 높아집니다."
+            },
+            {
+              "id": 2,
+              "type": "multiple_choice",
+              "question": "바벨이 가슴의 어느 위치에 닿아야 하나요?",
+              "options": [
+                { "id": "a", "text": "목 근처 (상부 가슴)" },
+                { "id": "b", "text": "가슴 중앙-하부 (젖꼭지 라인)" },
+                { "id": "c", "text": "복부 근처" },
+                { "id": "d", "text": "가슴에 닿지 않음" }
+              ],
+              "correctAnswer": "b",
+              "explanation": "바벨은 가슴 중앙에서 하부 (젖꼭지 라인)에 터치해야 가장 효율적인 궤적을 그립니다."
+            },
+            {
+              "id": 3,
+              "type": "ox",
+              "question": "벤치프레스 시 엉덩이는 항상 벤치에 붙어 있어야 한다. (O/X)",
+              "correctAnswer": "O",
+              "explanation": "엉덩이가 벤치에서 떨어지면 허리에 과도한 부담이 가해져 부상 위험이 높아집니다."
+            },
+            {
+              "id": 4,
+              "type": "multiple_choice",
+              "question": "바벨을 내릴 때의 적절한 속도는?",
+              "options": [
+                { "id": "a", "text": "최대한 빠르게 (0.5초)" },
+                { "id": "b", "text": "천천히 통제하며 (2-3초)" },
+                { "id": "c", "text": "중력에 맡겨 자유 낙하" },
+                { "id": "d", "text": "매우 느리게 (5초 이상)" }
+              ],
+              "correctAnswer": "b",
+              "explanation": "바벨을 내릴 때는 2-3초 정도 천천히 통제하며 내려야 근육 자극이 극대화되고 부상을 방지할 수 있습니다."
+            },
+            {
+              "id": 5,
+              "type": "ox",
+              "question": "벤치프레스 시 발은 공중에 들어도 상관없다. (O/X)",
+              "correctAnswer": "X",
+              "explanation": "발은 항상 지면에 단단히 고정해야 합니다. 레그 드라이브(발로 지면을 미는 힘)를 활용하면 더 무거운 무게를 안전하게 들 수 있습니다."
+            }
+          ],
+          "passingScore": 4,
+          "allowRetry": true,
+          "maxAttempts": 3
+        }
+      }
+    ]
+  }
+}
