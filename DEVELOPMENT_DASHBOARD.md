@@ -46,6 +46,8 @@
 - [ ] 바알시불 캐릭터 이미지 제작 (외부 도구 사용)
 
 ### 🎉 오늘 완료한 작업 (2025-12-09)
+
+**📋 콘텐츠 기획 (오전)**
 - ✅ 0주차 콘텐츠 상세 기획 문서 작성 (week-0-detailed-plan.md)
   - 시네마틱 스토리 시나리오 (5개 씬)
   - 인터랙티브 퀴즈 설계
@@ -68,6 +70,8 @@
   - 인바디 측정 교육 콘텐츠
   - Before 사진 촬영 가이드
   - 목표 체성분 설정 시스템
+
+**🗄️ 데이터베이스 설계 (오전)**
 - ✅ 콘텐츠 시스템 DB 스키마 설계 (DATABASE_SCHEMA_CONTENT.md)
   - 커리큘럼 주차 테이블
   - 콘텐츠 아이템 및 진행 테이블
@@ -75,6 +79,30 @@
   - 진행 사진 테이블
   - 식단 기록 테이블
   - 사용자 목표 테이블
+- ✅ Prisma 스키마 업데이트 (schema.prisma)
+  - BodyMeasurement 모델 추가
+  - ProgressPhoto 모델 추가
+  - FoodLog 모델 추가
+  - UserGoal 모델 추가
+  - User 모델 relations 확장
+
+**⚙️ 백엔드 API 개발 (오후)**
+- ✅ 커리큘럼 API 구현
+  - GET /api/curriculum/weeks - 주차 목록 조회
+  - GET /api/curriculum/weeks/:weekNumber - 주차 상세
+  - GET /api/curriculum/progress - 사용자 진행 상황
+  - POST /api/curriculum/weeks/:weekNumber/start - 주차 시작
+  - POST /api/curriculum/modules/:moduleId/complete - 콘텐츠 완료
+  - POST /api/curriculum/modules/:moduleId/submit-quiz - 퀴즈 제출
+- ✅ 신체 측정 API 구현
+  - GET /api/measurements - 측정 기록 조회
+  - POST /api/measurements - 측정 기록 생성
+  - GET /api/measurements/photos - 진행 사진 조회
+  - POST /api/measurements/photos - 진행 사진 업로드
+  - GET /api/measurements/goals - 목표 조회
+  - POST /api/measurements/goals - 목표 생성
+  - PUT /api/measurements/goals/:goalId - 목표 업데이트
+  - POST /api/measurements/goals/:goalId/complete - 목표 완료
 
 ### 🎉 어제 완료한 작업 (2025-12-08)
 - ✅ 비표준 포트 설정 (8100, 8200, 8300)
