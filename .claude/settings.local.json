@@ -25,7 +25,14 @@
       "Bash(findstr:*)",
       "Bash(tasklist:*)",
       "Bash(timeout 30 bash -c 'until docker-compose ps | grep -q \"\"Up\"\"; do sleep 2; done')",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(node --loader ts-node/esm prisma/seeds/exercises.seed.ts:*)",
+      "Bash(node prisma/seeds/exercises.seed.js:*)",
+      "Bash(node prisma/seeds/exercises.seed.mjs:*)",
+      "Bash(cat:*)",
+      "Bash(python -m json.tool:*)"
     ],
     "deny": [],
     "ask": []

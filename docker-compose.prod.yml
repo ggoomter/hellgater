@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
@@ -7,66 +5,94 @@ services:
     container_name: hellgater-db-prod
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hellgater_prod_password_change_me}
-      POSTGRES_DB: hellgater
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-hellgater}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-8300}:5432"
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - hellgater-network
+      - hellgater-network-prod
+    # 보안: 프로덕션에서는 포트를 외부에 노출하지 않는 것이 좋습니다
+    # ports:
+    #   - "5432:5432"
 
-  # Application (Server + Client)
-  app:
+  # Backend Server
+  server:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: hellgater-app-prod
+      dockerfile: ./server/Dockerfile.prod
+    container_name: hellgater-server-prod
     restart: always
     environment:
       NODE_ENV: production
-      PORT: 4000
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-hellgater_prod_password_change_me}@postgres:5432/hellgater?schema=public
-      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-change-this-in-production}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-this-in-production}
-      JWT_ACCESS_EXPIRES_IN: 15m
-      JWT_REFRESH_EXPIRES_IN: 7d
-      BCRYPT_SALT_ROUNDS: 12
-      LOG_LEVEL: info
+      PORT: ${PORT:-8200}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:8100}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hellgater}?schema=public
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+      BCRYPT_SALT_ROUNDS: ${BCRYPT_SALT_ROUNDS:-12}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
     ports:
-      - "4000:4000"
+      - "${PORT:-8200}:4000"
     depends_on:
       postgres:
         condition: service_healthy
     networks:
-      - hellgater-network
+      - hellgater-network-prod
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Client (Production Build)
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile.prod
+    container_name: hellgater-client-prod
+    restart: always
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8200/api/v1}
+    ports:
+      - "${CLIENT_PORT:-8100}:80"
+    depends_on:
+      server:
+        condition: service_healthy
+    networks:
+      - hellgater-network-prod
 
   # Nginx reverse proxy (optional)
-  nginx:
-    image: nginx:alpine
-    container_name: hellgater-nginx
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - app
-    networks:
-      - hellgater-network
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: hellgater-nginx-prod
+  #   restart: always
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./nginx/ssl:/etc/nginx/ssl:ro
+  #   depends_on:
+  #     - client
+  #     - server
+  #   networks:
+  #     - hellgater-network-prod
 
 volumes:
   postgres_prod_data:
     driver: local
 
 networks:
-  hellgater-network:
+  hellgater-network-prod:
     driver: bridge

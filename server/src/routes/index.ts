@@ -4,6 +4,8 @@ import characterRoutes from './character.routes.js';
 import workoutRoutes from './workout.routes.js';
 import levelTestRoutes from './levelTest.routes.js';
 import exerciseRoutes from './exercise.routes.js';
+import curriculumRoutes from './curriculumRoutes';
+import measurementRoutes from './measurementRoutes';
 
 const router = Router();
 
@@ -13,5 +15,7 @@ router.use('/characters', characterRoutes);
 router.use('/workouts', workoutRoutes);
 router.use('/level-tests', levelTestRoutes);
 router.use('/exercises', exerciseRoutes);
+router.use('/curriculum', curriculumRoutes);
+router.use('/measurements', measurementRoutes);
 
 export default router;

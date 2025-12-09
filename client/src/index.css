@@ -19,7 +19,101 @@
 }
 
 @layer components {
-  /* 커스텀 컴포넌트 스타일 추가 */
+  /* 게임화 효과 */
+  @keyframes glow-pulse {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(168, 85, 247, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
+    }
+    50% {
+      text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 40px rgba(168, 85, 247, 0.6);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  @keyframes neon-glow {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+      box-shadow: 0 0 10px #168d75, 0 0 20px #168d75, 0 0 30px #168d75, 0 0 40px #168d75,
+        inset 0 0 10px rgba(22, 141, 117, 0.5);
+    }
+    20%, 24%, 55% {
+      box-shadow: none;
+    }
+  }
+
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* 게임 카드 호버 효과 */
+  .game-card-hover {
+    @apply relative cursor-pointer transition-all duration-300;
+  }
+
+  .game-card-hover:hover {
+    @apply transform scale-105;
+  }
+
+  /* 레벨 업 에니메이션 */
+  .level-up-animation {
+    animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* 네온 글로우 테두리 */
+  .neon-border {
+    @apply border-2 border-purple-500;
+    animation: neon-glow 3s infinite;
+  }
+
+  /* 글래스 모르피즘 */
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/10 border border-white/20 rounded-xl;
+  }
+
+  /* 게임 배경 그리드 */
+  .game-grid-bg {
+    background-image:
+      linear-gradient(rgba(168, 85, 247, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
 }
 
 @layer utilities {
@@ -31,5 +125,46 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* 게임화 텍스트 효과 */
+  .glow-text {
+    animation: glow-pulse 2s infinite;
+  }
+
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .shimmer-animation {
+    background: linear-gradient(90deg, #ffffff, #ffffff);
+    background-clip: text;
+    animation: shimmer 2s infinite;
+  }
+
+  /* 게임 스타일 그림자 */
+  .game-shadow {
+    box-shadow:
+      0 0 20px rgba(168, 85, 247, 0.4),
+      0 0 40px rgba(34, 211, 238, 0.2);
+  }
+
+  .game-shadow-lg {
+    box-shadow:
+      0 0 30px rgba(168, 85, 247, 0.6),
+      0 0 60px rgba(34, 211, 238, 0.4);
+  }
+
+  /* 색상 그래디언트 */
+  .gradient-purple-cyan {
+    @apply bg-gradient-to-r from-purple-600 to-cyan-600;
+  }
+
+  .gradient-purple-pink {
+    @apply bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600;
+  }
+
+  .gradient-game {
+    @apply bg-gradient-to-br from-purple-900/20 via-transparent to-cyan-900/20;
   }
 }

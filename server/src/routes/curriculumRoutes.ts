@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticateToken } from '../middleware/auth';
+import { authenticate } from '../middleware/auth.middleware.js';
 import * as curriculumController from '../controllers/curriculumController';
 
 const router = Router();
@@ -14,18 +14,18 @@ router.get('/weeks/:weekNumber', curriculumController.getWeekByNumber);
 router.get('/weeks/:weekNumber/modules', curriculumController.getWeekModules);
 
 // 사용자별 커리큘럼 진행 상황 조회 (인증 필요)
-router.get('/progress', authenticateToken, curriculumController.getUserProgress);
+router.get('/progress', authenticate, curriculumController.getUserProgress);
 
 // 특정 주차 진행 상황 조회
-router.get('/progress/:weekNumber', authenticateToken, curriculumController.getWeekProgress);
+router.get('/progress/:weekNumber', authenticate, curriculumController.getWeekProgress);
 
 // 주차 시작 (언락)
-router.post('/weeks/:weekNumber/start', authenticateToken, curriculumController.startWeek);
+router.post('/weeks/:weekNumber/start', authenticate, curriculumController.startWeek);
 
 // 콘텐츠 모듈 완료 처리
-router.post('/modules/:moduleId/complete', authenticateToken, curriculumController.completeModule);
+router.post('/modules/:moduleId/complete', authenticate, curriculumController.completeModule);
 
 // 퀴즈 제출
-router.post('/modules/:moduleId/submit-quiz', authenticateToken, curriculumController.submitQuiz);
+router.post('/modules/:moduleId/submit-quiz', authenticate, curriculumController.submitQuiz);
 
 export default router;

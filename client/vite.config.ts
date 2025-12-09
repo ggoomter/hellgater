@@ -20,7 +20,8 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:4000',
+        // Docker 환경에서는 server 컨테이너 이름 사용, 로컬에서는 localhost 사용
+        target: process.env.VITE_API_URL?.replace('/api/v1', '') || 'http://server:4000',
         changeOrigin: true
       }
     }

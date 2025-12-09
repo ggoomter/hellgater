@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { authenticateToken } from '../middleware/auth';
+import { authenticate } from '../middleware/auth.middleware.js';
 import * as measurementController from '../controllers/measurementController';
 
 const router = Router();
 
 // 모든 라우트에 인증 필요
-router.use(authenticateToken);
+router.use(authenticate);
 
 // 신체 측정 기록 조회
 router.get('/measurements', measurementController.getMeasurements);

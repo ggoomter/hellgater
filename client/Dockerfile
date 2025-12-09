@@ -16,11 +16,12 @@ RUN npm install
 COPY client ./client
 COPY shared ./shared
 
-# Expose port
-EXPOSE 3000
+# Expose port (default 8100)
+EXPOSE ${CLIENT_PORT:-8100}
 
 # Set working directory to client
 WORKDIR /app/client
 
-# Start Vite dev server with host flag to allow external connections
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Start Vite dev server with host flag (port is set in vite.config.ts to 3000)
+# Use exec form to ensure proper signal handling and log output
+CMD ["sh", "-c", "npm run dev -- --host 0.0.0.0"]

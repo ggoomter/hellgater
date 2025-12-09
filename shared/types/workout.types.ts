@@ -178,6 +178,18 @@ export interface CreateWorkoutRecordResponse {
     levelPenalty: number;
     totalExp: number;
   };
+  levelUp?: {
+    didLevelUp: boolean;
+    oldLevel: number;
+    newLevel: number;
+    levelsGained: number;
+    bodyPartId: number;
+    bodyPartName: string;
+    rewards?: {
+      skillPoints?: number;
+      titles?: string[];
+    };
+  };
   levelTestAvailable?: {
     bodyPartId: number;
     bodyPartName: string;

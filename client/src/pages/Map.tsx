@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card } from '../components/common';
+import { Card, GameCard } from '../components/common';
 
 // 5속성 정의
 const attributes = [
@@ -154,63 +154,172 @@ export default function Map() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 p-6">
-      {/* 배경 장식 */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      {/* 헬스맵 배경 이미지 */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: 'url(/health-map.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.25,
+          zIndex: 0
+        }}
+      />
+      
+      {/* 콘텐츠 컨테이너 */}
+      <div className="relative z-10 min-h-screen">
+
+      {/* 배경 애니메이션 */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {/* 메인 글로우 */}
+        <motion.div
+          className="absolute top-1/3 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"
+          animate={{
+            x: [0, 50, 0],
+            y: [0, -50, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl"
+          animate={{
+            x: [0, -50, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
       </div>
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative max-w-7xl mx-auto p-4 md:p-6">
         {/* 헤더 */}
         <motion.div
           className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl font-bold text-white mb-2">🗺️ 맵 탐험</h1>
-          <p className="text-gray-300">속성을 선택하고 지식을 탐험하세요</p>
+          <div className="flex items-center justify-between gap-4 flex-col md:flex-row">
+            <div className="flex-1">
+              <motion.div
+                className="text-5xl md:text-6xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent mb-2"
+                animate={{ textShadow: ['0 0 20px rgba(168,85,247,0.5)', '0 0 40px rgba(168,85,247,0.8)', '0 0 20px rgba(168,85,247,0.5)'] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                🗺️ 던전 탐험
+              </motion.div>
+              <p className="text-lg text-gray-400">
+                각 <span className="text-cyan-400 font-bold">속성 라인</span>을 선택해 나만의 운동 여정을 시작하세요
+              </p>
+            </div>
+
+            {/* 네비게이션 버튼 */}
+            <div className="flex gap-2 flex-shrink-0">
+              <motion.button
+                onClick={() => navigate('/')}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-green-500/50 transition-all"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                🏠 홈
+              </motion.button>
+              <motion.button
+                onClick={() => navigate('/workout/record')}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                💪 운동 기록
+              </motion.button>
+            </div>
+
+            {/* 진행도 요약 */}
+            <motion.div
+              className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-xl p-4 backdrop-blur-sm"
+              animate={{ borderColor: ['rgba(168,85,247,0.3)', 'rgba(34,211,238,0.5)', 'rgba(168,85,247,0.3)'] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              <div className="text-center">
+                <p className="text-xs text-gray-400 mb-2">전체 진행도</p>
+                <div className="flex gap-3">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-yellow-400">12</p>
+                    <p className="text-xs text-gray-400">완료</p>
+                  </div>
+                  <div className="text-gray-600">|</div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-purple-400">18</p>
+                    <p className="text-xs text-gray-400">진행 중</p>
+                  </div>
+                  <div className="text-gray-600">|</div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-gray-500">25</p>
+                    <p className="text-xs text-gray-400">잠금</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
-        {/* 속성 선택 */}
+        {/* 속성 선택 - 더 큰 카드 */}
         <motion.div
-          className="mb-10"
+          className="mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card variant="glass" className="backdrop-blur-xl bg-white/10">
-            <h2 className="text-white text-xl font-bold mb-6">속성 선택</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {attributes.map((attr, index) => (
-                <motion.button
-                  key={attr.id}
-                  onClick={() => setSelectedAttribute(attr.id)}
-                  className={`p-5 rounded-xl border-2 transition-all text-left ${
-                    selectedAttribute === attr.id
-                      ? `${attr.borderColor} ${attr.bgColor} shadow-lg`
-                      : 'border-gray-600 bg-gray-800/50 hover:border-gray-500'
-                  }`}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 + index * 0.05 }}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="text-4xl">{attr.icon}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-2xl">{attr.shape}</span>
-                        <h3 className="text-white font-bold text-sm truncate">{attr.name}</h3>
-                      </div>
-                      <p className="text-gray-400 text-xs leading-snug">{attr.description}</p>
-                    </div>
+          <h2 className="text-white text-2xl font-bold mb-6 flex items-center gap-2">
+            ⚡ 속성 라인 선택
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {attributes.map((attr, index) => (
+              <motion.button
+                key={attr.id}
+                onClick={() => setSelectedAttribute(attr.id)}
+                className={`relative p-4 rounded-xl border-2 transition-all overflow-hidden group ${
+                  selectedAttribute === attr.id
+                    ? `${attr.borderColor} ${attr.bgColor} shadow-lg shadow-purple-500/50`
+                    : 'border-gray-700 bg-gray-800/30 hover:border-purple-500/50 hover:bg-gray-800/50'
+                }`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.15 + index * 0.05 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {/* 글로우 배경 */}
+                {selectedAttribute === attr.id && (
+                  <motion.div
+                    className="absolute -inset-1 bg-gradient-to-r rounded-xl blur opacity-50"
+                    style={{
+                      backgroundImage: `linear-gradient(to right, ${attr.color})`
+                    }}
+                    animate={{ opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                )}
+
+                {/* 콘텐츠 */}
+                <div className="relative flex flex-col items-center text-center gap-2">
+                  <div className="text-3xl">{attr.icon}</div>
+                  <div>
+                    <h3 className="text-white font-bold text-xs leading-tight">{attr.name}</h3>
+                    <p className="text-gray-400 text-xs mt-1 line-clamp-2">{attr.description}</p>
                   </div>
-                </motion.button>
-              ))}
-            </div>
-          </Card>
+                  {selectedAttribute === attr.id && (
+                    <motion.div
+                      className="mt-2 text-yellow-400 text-sm font-bold"
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      선택됨 ✓
+                    </motion.div>
+                  )}
+                </div>
+              </motion.button>
+            ))}
+          </div>
         </motion.div>
 
         {/* 선택된 맵 표시 */}
@@ -224,24 +333,78 @@ export default function Map() {
           >
             {currentMap.chapters.length > 0 ? (
               <div className="space-y-8">
+                {/* 라인 요약 */}
+                <GameCard glowing delay={0.2}>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="bg-gray-800/50 p-4 rounded-lg text-center">
+                      <p className="text-gray-400 text-sm mb-2">👥 라인 선택</p>
+                      <p className="text-2xl font-bold text-white">{attributes.find(a => a.id === selectedAttribute)?.name}</p>
+                      <p className="text-gray-500 text-xs mt-2">{attributes.find(a => a.id === selectedAttribute)?.description}</p>
+                    </div>
+                    <div className="bg-green-900/20 border border-green-500/30 p-4 rounded-lg text-center">
+                      <p className="text-gray-400 text-sm mb-2">✅ 완료</p>
+                      <p className="text-3xl font-bold text-green-400">4</p>
+                      <p className="text-gray-500 text-xs mt-2">스테이지</p>
+                    </div>
+                    <div className="bg-yellow-900/20 border border-yellow-500/30 p-4 rounded-lg text-center">
+                      <p className="text-gray-400 text-sm mb-2">⚡ 진행 중</p>
+                      <p className="text-3xl font-bold text-yellow-400">6</p>
+                      <p className="text-gray-500 text-xs mt-2">스테이지</p>
+                    </div>
+                    <div className="bg-purple-900/20 border border-purple-500/30 p-4 rounded-lg text-center">
+                      <p className="text-gray-400 text-sm mb-2">🔒 잠금</p>
+                      <p className="text-3xl font-bold text-purple-400">15</p>
+                      <p className="text-gray-500 text-xs mt-2">스테이지</p>
+                    </div>
+                  </div>
+                </GameCard>
+
+                {/* 챕터들 */}
                 {currentMap.chapters.map((chapter: any, chapterIndex: number) => (
                   <motion.div
                     key={chapter.chapterId}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: chapterIndex * 0.1 }}
+                    transition={{ delay: 0.25 + chapterIndex * 0.1 }}
                   >
-                    <Card variant="glass" className="backdrop-blur-xl bg-white/10">
+                    <GameCard delay={0.3 + chapterIndex * 0.1}>
                       {/* 챕터 헤더 */}
-                      <div className="mb-6 pb-4 border-b border-gray-700">
-                        <h2 className="text-2xl font-bold text-white mb-1">{chapter.title}</h2>
+                      <div className="mb-8 pb-6 border-b border-gradient-to-r from-purple-600 to-transparent">
+                        <div className="flex items-center justify-between mb-3">
+                          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                            <span className="text-4xl">🎯</span>
+                            {chapter.title}
+                          </h2>
+                          <div className="text-right">
+                            <p className="text-purple-400 font-bold">{chapter.chapterId}</p>
+                            <p className="text-xs text-gray-400">챕터</p>
+                          </div>
+                        </div>
                         {chapter.subTitle && (
-                          <p className="text-gray-400 text-sm">{chapter.subTitle}</p>
+                          <p className="text-cyan-400 font-semibold text-sm flex items-center gap-2">
+                            <span>📊</span>
+                            {chapter.subTitle}
+                          </p>
                         )}
+                        {/* 챕터 진행도 바 */}
+                        <div className="mt-4 space-y-2">
+                          <div className="flex justify-between text-xs text-gray-400">
+                            <span>챕터 진행도</span>
+                            <span>4 / 6</span>
+                          </div>
+                          <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <motion.div
+                              className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                              initial={{ width: 0 }}
+                              animate={{ width: '66%' }}
+                              transition={{ duration: 1, ease: 'easeOut' }}
+                            />
+                          </div>
+                        </div>
                       </div>
 
                       {/* 스테이지 목록 */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                         {chapter.stages.map((stage: any, stageIndex: number) => {
                           const isLocked = stage.locked;
                           const isCompleted = stage.completed;
@@ -251,75 +414,128 @@ export default function Map() {
                               key={stage.stageId}
                               disabled={isLocked}
                               onClick={() => !isLocked && handleStageClick(chapter.chapterId, stage.stageId)}
-                              className={`p-5 rounded-xl border-2 text-left transition-all relative overflow-hidden ${
+                              className={`relative group overflow-hidden rounded-lg border-2 text-left transition-all p-4 ${
                                 isCompleted
-                                  ? 'border-green-500 bg-green-900/20'
+                                  ? 'border-green-500/50 bg-green-900/20 hover:bg-green-900/30'
                                   : isLocked
-                                  ? 'border-gray-700 bg-gray-800/30 opacity-50 cursor-not-allowed'
-                                  : 'border-primary bg-primary/10 hover:bg-primary/20 hover:shadow-lg hover:shadow-primary/30 cursor-pointer'
+                                  ? 'border-gray-700/50 bg-gray-800/20 opacity-50 cursor-not-allowed'
+                                  : 'border-purple-500/50 bg-purple-900/20 hover:bg-purple-900/30 hover:border-purple-400 cursor-pointer'
                               }`}
                               initial={{ opacity: 0, scale: 0.9 }}
                               animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: 0.3 + stageIndex * 0.05 }}
-                              whileHover={!isLocked ? { scale: 1.03, y: -2 } : {}}
-                              whileTap={!isLocked ? { scale: 0.98 } : {}}
+                              transition={{ delay: 0.35 + stageIndex * 0.05 }}
+                              whileHover={!isLocked ? { scale: 1.05, y: -4 } : {}}
+                              whileTap={!isLocked ? { scale: 0.95 } : {}}
                             >
-                              {/* 잠금/완료 아이콘 */}
-                              <div className="absolute top-3 right-3">
-                                {isCompleted ? (
-                                  <span className="text-2xl">✅</span>
-                                ) : isLocked ? (
-                                  <span className="text-2xl">🔒</span>
-                                ) : (
-                                  <span className="text-2xl">⭐</span>
-                                )}
+                              {/* 배경 글로우 */}
+                              {!isLocked && !isCompleted && (
+                                <motion.div
+                                  className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/10 to-purple-600/0"
+                                  animate={{ backgroundPosition: ['0% 0%', '100% 0%'] }}
+                                  transition={{ duration: 3, repeat: Infinity }}
+                                />
+                              )}
+
+                              {/* 상태 아이콘 */}
+                              <div className="absolute top-2 right-2 text-2xl">
+                                {isCompleted ? '✅' : isLocked ? '🔒' : '⭐'}
                               </div>
 
-                              {/* 스테이지 번호와 제목 */}
-                              <div className="pr-8">
-                                <div className="text-primary font-bold text-sm mb-2">
-                                  {chapter.chapterId}-{stage.stageId}
+                              {/* 콘텐츠 */}
+                              <div className="relative pr-8">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="text-purple-400 font-bold text-xs">
+                                    {chapter.chapterId}-{stage.stageId}
+                                  </span>
+                                  <div className="text-xl">{isCompleted ? '🏆' : isLocked ? '🚫' : '🎮'}</div>
                                 </div>
-                                <h3
-                                  className={`font-bold leading-snug ${
-                                    isLocked ? 'text-gray-500' : 'text-white'
-                                  }`}
-                                >
+                                <h3 className={`font-bold text-sm leading-tight mb-2 ${
+                                  isLocked ? 'text-gray-500' : 'text-white'
+                                }`}>
                                   {stage.title}
                                 </h3>
-                              </div>
 
-                              {/* 진행 상태 표시 */}
-                              {!isLocked && !isCompleted && (
-                                <div className="mt-3 pt-3 border-t border-gray-700">
-                                  <span className="text-primary text-xs font-medium">
-                                    시작하기 →
-                                  </span>
+                                {/* 난이도 표시 */}
+                                <div className="flex gap-1">
+                                  {[...Array(stage.stageId % 5)].map((_, i) => (
+                                    <div key={i} className="w-1.5 h-1.5 bg-yellow-400 rounded-full"></div>
+                                  ))}
                                 </div>
-                              )}
+
+                                {/* 보상 표시 */}
+                                {!isLocked && !isCompleted && (
+                                  <div className="mt-2 pt-2 border-t border-gray-700">
+                                    <p className="text-cyan-400 text-xs font-bold">
+                                      보상: +250 EXP
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
                             </motion.button>
                           );
                         })}
                       </div>
-                    </Card>
+                    </GameCard>
                   </motion.div>
                 ))}
               </div>
             ) : (
               // 아직 구현되지 않은 속성
-              <Card variant="glass" className="backdrop-blur-xl bg-white/10">
-                <div className="text-center py-16">
-                  <div className="text-6xl mb-6">🚧</div>
-                  <h3 className="text-2xl font-bold text-white mb-3">준비 중입니다</h3>
-                  <p className="text-gray-400">
-                    {attributes.find((a) => a.id === selectedAttribute)?.name} 맵은 곧 오픈됩니다!
+              <GameCard glowing>
+                <div className="text-center py-20">
+                  <motion.div
+                    className="text-8xl mb-6"
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    🔨
+                  </motion.div>
+                  <h3 className="text-2xl font-bold text-white mb-3">준비 중입니다!</h3>
+                  <p className="text-gray-400 mb-6">
+                    {attributes.find((a) => a.id === selectedAttribute)?.name} 라인은 곧 오픈됩니다
                   </p>
+                  <div className="inline-flex gap-2">
+                    <span className="inline-block animate-bounce text-2xl">⏳</span>
+                    <span className="inline-block animate-bounce text-2xl" style={{ animationDelay: '0.2s' }}>
+                      ⏳
+                    </span>
+                    <span className="inline-block animate-bounce text-2xl" style={{ animationDelay: '0.4s' }}>
+                      ⏳
+                    </span>
+                  </div>
                 </div>
-              </Card>
+              </GameCard>
             )}
           </motion.div>
         </AnimatePresence>
+
+        {/* 하단 네비게이션 */}
+        <motion.div
+          className="mt-12 flex flex-col sm:flex-row gap-3 justify-center items-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <motion.button
+            onClick={() => navigate('/')}
+            className="px-6 py-3 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold hover:shadow-lg hover:shadow-green-500/50 transition-all"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            ← 홈으로 돌아가기
+          </motion.button>
+          <motion.button
+            onClick={() => navigate('/workout/record')}
+            className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            운동 기록하기 →
+          </motion.button>
+        </motion.div>
+      </div>
       </div>
     </div>
   );
 }
+

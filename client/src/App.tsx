@@ -4,7 +4,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { store, persistor } from './store/store';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import { Login, Register, Home, CharacterCreate, Map, StageDetail } from './pages';
+import { Login, Register, Home, CharacterCreate, Map, StageDetail, Week0Page, ModuleDetailPage } from './pages';
 import WorkoutRecord from './pages/WorkoutRecord';
 
 const queryClient = new QueryClient({
@@ -79,6 +79,22 @@ function App() {
               element={
                 <ProtectedRoute requireAuth={true} redirectTo="/login">
                   <WorkoutRecord />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/curriculum/week/0"
+              element={
+                <ProtectedRoute requireAuth={true} redirectTo="/login">
+                  <Week0Page />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/curriculum/week/:weekNumber/module/:moduleId"
+              element={
+                <ProtectedRoute requireAuth={true} redirectTo="/login">
+                  <ModuleDetailPage />
                 </ProtectedRoute>
               }
             />

@@ -17,14 +17,7 @@ const WorkoutRecord = () => {
   const { calculate } = useCalculate1RM();
   const { estimate } = useEstimateExp();
   const { data: availableLevelTests } = useAvailableLevelTests();
-  const { data: progressiveOverloadRecommendation } = useProgressiveOverloadRecommendation(formData.exerciseId);
-
-  // 부위 및 운동 데이터
-  const { data: bodyPartsData } = useBodyParts();
-  const [selectedBodyPartId, setSelectedBodyPartId] = useState<number | null>(null);
-  const { data: exercisesData, isLoading: isLoadingExercises } = useExercisesByBodyPart(selectedBodyPartId);
-
-  // Form state
+  // Form state (must be declared before hooks that reference it)
   const [formData, setFormData] = useState({
     exerciseId: null as number | null,
     sets: 3,
@@ -32,6 +25,13 @@ const WorkoutRecord = () => {
     weight: 60,
     notes: '',
   });
+
+  const { data: progressiveOverloadRecommendation } = useProgressiveOverloadRecommendation(formData.exerciseId);
+
+  // 부위 및 운동 데이터
+  const { data: bodyPartsData } = useBodyParts();
+  const [selectedBodyPartId, setSelectedBodyPartId] = useState<number | null>(null);
+  const { data: exercisesData, isLoading: isLoadingExercises } = useExercisesByBodyPart(selectedBodyPartId);
 
   // Preview state
   const [preview, setPreview] = useState({
@@ -164,7 +164,7 @@ const WorkoutRecord = () => {
         {/* 부위 선택 */}
         <Card variant="glass" className="mb-6">
           <div className="p-6">
-            {bodyPartsData && (
+            {bodyPartsData ? (
               <BodyPartSelector
                 bodyParts={bodyPartsData.bodyParts}
                 selectedBodyPartId={selectedBodyPartId}
@@ -173,6 +173,10 @@ const WorkoutRecord = () => {
                   setFormData((prev) => ({ ...prev, exerciseId: null })); // 부위 변경 시 운동 선택 초기화
                 }}
               />
+            ) : (
+              <div className="text-center py-8 text-gray-400">
+                <p>신체 부위를 불러오는 중입니다...</p>
+              </div>
             )}
           </div>
         </Card>

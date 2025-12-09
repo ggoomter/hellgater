@@ -4,3 +4,6 @@ export { default as Home } from './Home';
 export { default as CharacterCreate } from './CharacterCreate';
 export { default as Map } from './Map';
 export { default as StageDetail } from './StageDetail';
+export { default as WorkoutRecord } from './WorkoutRecord';
+export { default as Week0Page } from './curriculum/Week0Page';
+export { default as ModuleDetailPage } from './curriculum/ModuleDetailPage';
