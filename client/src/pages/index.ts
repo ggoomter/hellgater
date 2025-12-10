@@ -6,4 +6,5 @@ export { default as Map } from './Map';
 export { default as StageDetail } from './StageDetail';
 export { default as WorkoutRecord } from './WorkoutRecord';
 export { default as Week0Page } from './curriculum/Week0Page';
+export { default as Week1Page } from './curriculum/Week1Page';
 export { default as ModuleDetailPage } from './curriculum/ModuleDetailPage';
