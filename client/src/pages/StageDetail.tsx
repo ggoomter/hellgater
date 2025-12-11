@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, Button } from '../components/common';
 import { transformContent, transformQuizText, speechStyles, type SpeechStyle } from '../utils/contentTransformer';
+import { mapApi } from '../services/api/map.api';
 
 // 스테이지 컨텐츠 데이터 (MVP: 무속성 1-1만 구현)
 const stageContent: Record<string, any> = {
@@ -158,7 +159,7 @@ RPG 게임으로 치면:
       {
         question: '근육 성장의 3단계를 순서대로 고르면?',
         options: [
-          '자극 → 회복 → 성장 ✨',
+          '자극 → 회복 → 성장',
           '회복 → 자극 → 성장',
           '성장 → 자극 → 회복',
           '자극 → 성장 → 회복'
@@ -170,7 +171,7 @@ RPG 게임으로 치면:
         question: '근비대(근육 키우기)에 최적인 반복 횟수는?',
         options: [
           '3-5회 (파워리프팅)',
-          '8-12회 (근비대 존) 🎯',
+          '8-12회 (근비대)',
           '15-20회 (근지구력)',
           '50회 이상 (유산소)'
         ],
@@ -181,7 +182,7 @@ RPG 게임으로 치면:
         question: '점진적 과부하(Progressive Overload)란?',
         options: [
           '매일 똑같은 무게로 운동하기',
-          '계속 무게/횟수/세트를 늘리기 📈',
+          '계속 무게/횟수/세트를 늘리기',
           '가벼운 무게로 많이 하기',
           '하루에 10시간 운동하기'
         ],
@@ -504,12 +505,36 @@ export default function StageDetail() {
                 variant="primary"
                 size="lg"
                 fullWidth
-                onClick={() => {
-                  // TODO: 스테이지 완료 API 호출
-                  const score = stage.quiz ? getScore() : stage.quiz.length;
-                  const bonus = score === stage.quiz.length ? 50 : 0;
-                  alert(`🎉 +${stage.rewards.exp + bonus} EXP 획득!\n다음 스테이지가 해금되었습니다!`);
-                  navigate('/map');
+                onClick={async () => {
+                  try {
+                    const score = stage.quiz ? getScore() : 0;
+                    const maxScore = stage.quiz ? stage.quiz.length : 0;
+                    const bonus = score === maxScore && maxScore > 0 ? 50 : 0;
+
+                    // 로컬 스토리지에 완료 상태 저장
+                    const stageCode = `${attribute}-${chapterId}-${stageId}`;
+                    const completedStagesStr = localStorage.getItem('completedStages');
+                    const completedStages = completedStagesStr ? new Set(JSON.parse(completedStagesStr)) : new Set();
+                    completedStages.add(stageCode);
+                    localStorage.setItem('completedStages', JSON.stringify([...completedStages]));
+
+                    // 스테이지 완료 API 호출 (백엔드 구현 시)
+                    try {
+                      await mapApi.completeStage({
+                        stageCode,
+                        score: maxScore > 0 ? score : undefined,
+                      });
+                    } catch (apiError) {
+                      console.log('API not available yet, using local storage');
+                    }
+
+                    const totalExp = stage.rewards.exp + bonus;
+                    alert(`🎉 +${totalExp} EXP 획득!\n다음 스테이지가 해금되었습니다!`);
+                    navigate('/map');
+                  } catch (error: any) {
+                    console.error('Failed to complete stage:', error);
+                    alert(`오류가 발생했습니다. 다시 시도해주세요.`);
+                  }
                 }}
                 disabled={stage.quiz && !showResults}
               >
