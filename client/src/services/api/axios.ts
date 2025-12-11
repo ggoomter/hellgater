@@ -1,5 +1,7 @@
 import axios from 'axios';
 import type { ApiResponse } from '@shared/types/api.types';
+import { store } from '../../store/store';
+import { setCredentials } from '../../store/slices/authSlice';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1';
 
@@ -74,9 +76,18 @@ apiClient.interceptors.response.use(
           if (response.data.success && response.data.data) {
             const { accessToken } = response.data.data;
 
-            // 새 토큰은 Redux action을 통해 저장해야 함
-            // 여기서는 임시로 localStorage에 직접 저장하지 않음
-            // TODO: Redux store에 직접 dispatch
+            // Redux store에 새 토큰 저장
+            // 기존 사용자 정보는 유지하고 accessToken만 업데이트
+            const currentState = store.getState();
+            if (currentState.auth.user && currentState.auth.tokens.refreshToken) {
+              store.dispatch(
+                setCredentials({
+                  user: currentState.auth.user,
+                  accessToken,
+                  refreshToken: currentState.auth.tokens.refreshToken,
+                })
+              );
+            }
 
             // 원래 요청 재시도
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;

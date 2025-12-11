@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🚀 헬게이터 빠른 시작 가이드
 
 이 가이드는 헬게이터를 가장 빠르게 실행하는 방법을 설명합니다.
@@ -29,6 +28,12 @@ cd hellgater
 
 ### 3단계: 실행 (1분)
 
+**방법 A: BAT 파일 더블클릭** (Windows, 제일 쉬움!)
+```
+프로젝트 폴더에서 start-dev.bat 더블클릭
+```
+
+**방법 B: 명령어 실행**
 ```bash
 npm run docker:dev
 ```
@@ -73,47 +78,11 @@ docker-compose logs -f
 docker-compose logs -f server
 docker-compose logs -f client
 docker-compose logs -f postgres
-=======
-# 🚀 빠른 시작 가이드 (Windows)
-
-## 📋 사전 준비
-
-1. **Docker Desktop 설치 및 실행**
-   - Docker Desktop이 실행 중이어야 합니다
-   - 작업 표시줄에 Docker 아이콘이 보이면 OK
-
-2. **Git Bash 또는 PowerShell**
-   - Windows 명령 프롬프트 또는 PowerShell에서 실행
+```
 
 ---
 
-## 🎮 실행 방법
-
-### 1️⃣ 개발 서버 시작
-
-**방법 A: BAT 파일 더블클릭** (제일 쉬움!)
-```
-프로젝트 폴더에서 start-dev.bat 더블클릭
-```
-
-**방법 B: 명령어 실행**
-```bash
-# 프로젝트 루트에서
-start-dev.bat
-
-# 또는
-npm run docker:dev
-```
-
-### 2️⃣ 브라우저에서 확인
-
-서버가 시작되면 자동으로 브라우저가 열립니다:
-- **프론트엔드**: http://localhost:3000
-- **백엔드 API**: http://localhost:4000
-
----
-
-## 🛠️ 유용한 BAT 파일들
+## 🛠️ 유용한 BAT 파일들 (Windows)
 
 ### 📦 start-dev.bat
 개발 서버를 시작합니다 (PostgreSQL + Backend + Frontend)
@@ -145,7 +114,8 @@ Docker 이미지를 재빌드합니다 (의존성 변경 후)
 → Docker Desktop을 실행하고 1분 정도 기다린 후 다시 시도
 
 ### 포트가 이미 사용 중
-→ 다른 프로그램이 3000, 4000, 5432 포트를 사용 중인지 확인
+
+**Windows**:
 ```bash
 # 포트 사용 중인 프로세스 확인
 netstat -ano | findstr :3000
@@ -156,10 +126,38 @@ netstat -ano | findstr :5432
 taskkill /PID <프로세스번호> /F
 ```
 
+**또는 `.env` 파일을 생성하고 포트를 변경**:
+```bash
+PORT=4002
+CLIENT_PORT=3002
+POSTGRES_PORT=5435
+```
+
+### 데이터베이스 연결 실패
+
+```bash
+# 데이터베이스 재시작
+docker-compose restart postgres
+
+# 로그 확인
+docker-compose logs postgres
+```
+
 ### 컨테이너가 시작되지 않음
 → 재빌드 시도
 ```bash
 rebuild-dev.bat
+```
+
+### 컨테이너가 계속 재시작됨
+
+```bash
+# 로그 확인
+docker-compose logs [service-name]
+
+# 컨테이너 재빌드
+docker-compose build --no-cache [service-name]
+docker-compose up [service-name]
 ```
 
 ### 화면이 안 나옴 (HMR 문제)
@@ -209,16 +207,16 @@ hellgater/
 
 **방법 A: 브라우저에서**
 ```
-http://localhost:4000/health
+http://localhost:8200/health
 ```
 
 **방법 B: cURL 명령어** (Git Bash)
 ```bash
 # 헬스 체크
-curl http://localhost:4000/health
+curl http://localhost:8200/health
 
 # 회원가입 (예정)
-curl -X POST http://localhost:4000/api/v1/auth/register \
+curl -X POST http://localhost:8200/api/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
@@ -229,7 +227,7 @@ curl -X POST http://localhost:4000/api/v1/auth/register \
 
 ### 2. 프론트엔드 화면 확인
 
-1. http://localhost:3000 접속
+1. http://localhost:8100 접속
 2. F12 (개발자 도구) 열기
 3. Console 탭에서 에러 확인
 4. Network 탭에서 API 요청 확인
@@ -299,58 +297,10 @@ logs-dev.bat
 
 # 또는 직접 명령어
 docker-compose logs -f
->>>>>>> a14ba48b3ded447a7d81adc44ed6140ba9d425b9
 ```
 
 ---
 
-<<<<<<< HEAD
-## 🛠️ 문제 해결
-
-### 포트가 이미 사용 중입니다
-
-`.env` 파일을 생성하고 포트를 변경:
-
-```bash
-PORT=4002
-CLIENT_PORT=3002
-POSTGRES_PORT=5435
-```
-
-### 데이터베이스 연결 실패
-
-```bash
-# 데이터베이스 재시작
-docker-compose restart postgres
-
-# 로그 확인
-docker-compose logs postgres
-```
-
-### 컨테이너가 계속 재시작됨
-
-```bash
-# 로그 확인
-docker-compose logs [service-name]
-
-# 컨테이너 재빌드
-docker-compose build --no-cache [service-name]
-docker-compose up [service-name]
-```
-
----
-
-## 📚 다음 단계
-
-- [Docker 가이드](./DOCKER_GUIDE.md) - 상세한 Docker 사용법
-- [시작 가이드](./GETTING_STARTED.md) - 로컬 개발 환경 설정
-- [README](./README.md) - 프로젝트 전체 문서
-
----
-
-**문제가 있으면 이슈를 등록하거나 개발팀에 문의하세요!** 🚀
-
-=======
 ## 🎯 다음 할 일
 
 1. **경험치 계산 로직** 구현 (TDD)
@@ -368,5 +318,14 @@ docker-compose up [service-name]
 
 ---
 
+## 📚 다음 단계
+
+- [Docker 가이드](./DOCKER_GUIDE.md) - 상세한 Docker 사용법
+- [시작 가이드](./GETTING_STARTED.md) - 로컬 개발 환경 설정
+- [README](./README.md) - 프로젝트 전체 문서
+
+---
+
+**문제가 있으면 이슈를 등록하거나 개발팀에 문의하세요!** 🚀
+
 **Happy Coding! 💪🎮**
->>>>>>> a14ba48b3ded447a7d81adc44ed6140ba9d425b9

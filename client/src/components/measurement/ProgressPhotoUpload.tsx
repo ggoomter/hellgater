@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, Upload, X, Check } from 'lucide-react';
+import { measurementApi } from '../../services/api/measurement.api';
 
 interface ProgressPhotoUploadProps {
   weekNumber?: number;
@@ -89,22 +90,43 @@ const ProgressPhotoUpload: React.FC<ProgressPhotoUploadProps> = ({
     setUploading(true);
 
     try {
-      // 실제로는 S3 등에 업로드하고 URL을 받아와야 함
-      // 여기서는 시뮬레이션
+      // 이미지를 base64로 변환하여 업로드
+      // 실제 프로덕션에서는 파일을 서버에 업로드하고 URL을 받아와야 함
       const uploadResults = await Promise.all(
         uploadedPhotos.map(async ([type, file]) => {
-          // TODO: 실제 파일 업로드 로직
-          // const formData = new FormData();
-          // formData.append('file', file);
-          // const response = await fetch('/api/upload', { method: 'POST', body: formData });
-          // const { url } = await response.json();
+          // 이미지를 base64로 변환
+          const base64Url = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(file!);
+          });
 
-          // 임시 URL (실제로는 서버에서 받아온 URL)
-          const mockUrl = URL.createObjectURL(file!);
+          // 이미지 크기 정보 가져오기
+          const imageSize = await new Promise<{ width: number; height: number }>((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+              resolve({ width: img.width, height: img.height });
+            };
+            img.onerror = () => resolve({ width: 0, height: 0 });
+            img.src = base64Url;
+          });
+
+          // API 호출하여 진행 사진 저장
+          const response = await measurementApi.uploadProgressPhoto({
+            photoType: type as 'front' | 'side' | 'back',
+            photoUrl: base64Url, // 실제로는 서버에서 받은 URL을 사용해야 함
+            photoDate: new Date().toISOString().split('T')[0],
+            weekNumber,
+            fileSizeBytes: file!.size,
+            imageWidth: imageSize.width,
+            imageHeight: imageSize.height,
+            isPublic: false,
+          });
 
           return {
             photoType: type,
-            photoUrl: mockUrl,
+            photoUrl: response.data.photoUrl,
             photoDate: new Date().toISOString().split('T')[0],
             weekNumber,
             fileSizeBytes: file!.size,
@@ -113,9 +135,11 @@ const ProgressPhotoUpload: React.FC<ProgressPhotoUploadProps> = ({
       );
 
       onUploadComplete(uploadResults);
-    } catch (error) {
+      alert('사진이 성공적으로 업로드되었습니다!');
+    } catch (error: any) {
       console.error('Upload error:', error);
-      alert('업로드 중 오류가 발생했습니다.');
+      const errorMessage = error.response?.data?.message || '업로드 중 오류가 발생했습니다.';
+      alert(errorMessage);
     } finally {
       setUploading(false);
     }

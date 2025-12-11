@@ -47,7 +47,7 @@ const Week0Page: React.FC = () => {
       x,
       y,
       title: module.titleKo,
-      completed: module.isCompleted,
+      completed: module.isCompleted ?? false,
       locked: weekProgress.status === 'locked' || index > weekProgress.completedModules,
       isTest: module.moduleType === 'quiz' && index === modules.length - 1,
     };

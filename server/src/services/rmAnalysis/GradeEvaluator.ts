@@ -303,22 +303,52 @@ export class GradeEvaluator {
     // Normalize exercise name
     const exerciseName = exercise.toLowerCase().replace(/_/g, '');
 
-    // For now, only support 10 reps
-    // TODO: Add threshold tables for different rep counts
+    // Select appropriate threshold table based on reps
+    // For different rep counts, we use interpolation or closest match
+    // Currently supporting: 5, 8, 10, 12, 15 reps
+    let repCategory: number;
+    if (reps <= 6) {
+      repCategory = 5; // 1-6 reps → use 5 rep thresholds (scaled down)
+    } else if (reps <= 9) {
+      repCategory = 8; // 7-9 reps → use 8 rep thresholds
+    } else if (reps <= 11) {
+      repCategory = 10; // 10-11 reps → use 10 rep thresholds
+    } else if (reps <= 13) {
+      repCategory = 12; // 12-13 reps → use 12 rep thresholds (scaled up)
+    } else {
+      repCategory = 15; // 14+ reps → use 15 rep thresholds (scaled up)
+    }
+
+    // Get base thresholds for 10 reps
+    let baseThresholds: GradeThresholds[];
     if (exerciseName.includes('deadlift')) {
-      return GradeEvaluator.DEADLIFT_10REPS_THRESHOLDS;
+      baseThresholds = GradeEvaluator.DEADLIFT_10REPS_THRESHOLDS;
+    } else if (exerciseName.includes('bench') || exerciseName.includes('press')) {
+      baseThresholds = GradeEvaluator.BENCH_PRESS_10REPS_THRESHOLDS;
+    } else if (exerciseName.includes('squat')) {
+      baseThresholds = GradeEvaluator.SQUAT_10REPS_THRESHOLDS;
+    } else {
+      // Default to deadlift thresholds
+      baseThresholds = GradeEvaluator.DEADLIFT_10REPS_THRESHOLDS;
     }
 
-    if (exerciseName.includes('bench') || exerciseName.includes('press')) {
-      return GradeEvaluator.BENCH_PRESS_10REPS_THRESHOLDS;
-    }
+    // Scale thresholds based on rep count
+    // Lower reps = higher weight thresholds, higher reps = lower weight thresholds
+    // Using Epley formula approximation: weight at N reps ≈ weight at 10 reps × (1 + (10-N)/30)
+    const scaleFactor = repCategory === 10 ? 1.0 : repCategory < 10 
+      ? 1 + (10 - repCategory) / 30  // Heavier for fewer reps
+      : 1 - (repCategory - 10) / 40; // Lighter for more reps
 
-    if (exerciseName.includes('squat')) {
-      return GradeEvaluator.SQUAT_10REPS_THRESHOLDS;
-    }
-
-    // Default to deadlift thresholds
-    return GradeEvaluator.DEADLIFT_10REPS_THRESHOLDS;
+    return baseThresholds.map((threshold) => ({
+      ...threshold,
+      bronze: Math.round(threshold.bronze * scaleFactor),
+      silver: Math.round(threshold.silver * scaleFactor),
+      gold: Math.round(threshold.gold * scaleFactor),
+      platinum: Math.round(threshold.platinum * scaleFactor),
+      diamond: Math.round(threshold.diamond * scaleFactor),
+      master: Math.round(threshold.master * scaleFactor),
+      challenger: Math.round(threshold.challenger * scaleFactor),
+    }));
   }
 
   /**

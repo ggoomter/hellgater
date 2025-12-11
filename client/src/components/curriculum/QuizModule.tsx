@@ -3,7 +3,15 @@ import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Loader2, Trophy, Sparkles, Star } from 'lucide-react';
 import { curriculumAPI } from '../../services/api';
 import type { ContentModule } from '../../services/api/curriculum.api';
-import BaalSibulCharacter from './BaalSibulCharacter';
+
+// 임시 캐릭터 컴포넌트 (BaalSibulCharacter가 없을 경우)
+const BaalSibulCharacter = ({ level, emotion, size }: { level: number; emotion: string; size: string }) => {
+  return (
+    <div className={`flex items-center justify-center ${size === 'large' ? 'w-32 h-32' : 'w-16 h-16'} bg-purple-500/20 rounded-full border-2 border-purple-500/30`}>
+      <span className="text-4xl">🎮</span>
+    </div>
+  );
+};
 
 interface QuizModuleProps {
   module: ContentModule;

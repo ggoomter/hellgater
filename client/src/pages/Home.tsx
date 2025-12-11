@@ -55,10 +55,20 @@ export default function Home() {
     );
   }
 
-  const characterLevel = character.totalLevel || 1;
-  const nextLevelExp = character.nextLevelExp || 1000;
-  const currentExp = character.totalExp || 0;
-  const expPercentage = (currentExp / nextLevelExp) * 100;
+  const characterLevel = character.totalLevel ?? 1;
+  const nextLevelExp = character.nextLevelExp ?? 1000;
+  const currentExp = character.totalExp ?? 0;
+  const expPercentage = nextLevelExp > 0 ? (currentExp / nextLevelExp) * 100 : 0;
+  
+  // 등급 계산 (레벨 기반)
+  const getGrade = (level: number): string => {
+    if (level >= 50) return 'DIAMOND';
+    if (level >= 40) return 'PLATINUM';
+    if (level >= 30) return 'GOLD';
+    if (level >= 20) return 'SILVER';
+    return 'BRONZE';
+  };
+  const grade = getGrade(characterLevel);
 
   // Mock 퀘스트 데이터
   const dailyQuests = [
@@ -179,7 +189,7 @@ export default function Home() {
 
             {/* 레벨 뱃지 */}
             <div className="flex justify-center">
-              <LevelBadge grade={character.grade || 'BRONZE'} level={characterLevel} />
+              <LevelBadge grade={grade} level={characterLevel} />
             </div>
 
             {/* EXP 진행률 */}
@@ -318,56 +328,56 @@ export default function Home() {
             </GameCard>
 
             {/* 신체 부위 레벨 */}
-            <GameCard delay={0.35}>
-              <h3 className="text-white text-lg font-bold mb-6 flex items-center gap-2">
-                🏋️ 신체 부위 레벨
-              </h3>
+            {character.bodyParts && character.bodyParts.length > 0 && (
+              <GameCard delay={0.35}>
+                <h3 className="text-white text-lg font-bold mb-6 flex items-center gap-2">
+                  🏋️ 신체 부위 레벨
+                </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { id: 'chest', name: '가슴', level: 5, exp: 350, maxExp: 500, icon: '💪' },
-                  { id: 'back', name: '등', level: 4, exp: 280, maxExp: 400, icon: '🦸' },
-                  { id: 'legs', name: '다리', level: 6, exp: 420, maxExp: 600, icon: '🦵' },
-                  { id: 'shoulders', name: '어깨', level: 3, exp: 150, maxExp: 300, icon: '🏋️' },
-                  { id: 'arms', name: '팔', level: 4, exp: 200, maxExp: 400, icon: '💪' },
-                  { id: 'abs', name: '복근', level: 5, exp: 380, maxExp: 500, icon: '⚡' },
-                  { id: 'cardio', name: '심폐', level: 7, exp: 600, maxExp: 700, icon: '❤️' },
-                ].map((part, index) => (
-                  <motion.div
-                    key={part.id}
-                    className="p-4 rounded-lg border border-gray-700 bg-gray-800/30 hover:border-purple-500/50 hover:bg-gray-800/50 transition-all cursor-pointer group"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.4 + index * 0.05 }}
-                    whileHover={{ scale: 1.05, y: -4 }}
-                    onClick={() => setExpandedStat(expandedStat === part.id ? null : part.id)}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl group-hover:scale-125 transition-transform">{part.icon}</span>
-                        <div>
-                          <p className="text-white font-bold text-sm">{part.name}</p>
-                          <p className="text-xs text-purple-400 font-bold">Lv. {part.level}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-yellow-400 text-xs font-bold">{part.exp}</p>
-                        <p className="text-gray-500 text-xs">/ {part.maxExp}</p>
-                      </div>
-                    </div>
-
-                    {/* 진행률 바 */}
-                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {character.bodyParts.map((part, index) => {
+                    const expPercentage = part.nextLevelExp > 0 ? (part.currentExp / part.nextLevelExp) * 100 : 0;
+                    return (
                       <motion.div
-                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
-                        animate={{ width: `${(part.exp / part.maxExp) * 100}%` }}
-                        transition={{ duration: 0.8 }}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </GameCard>
+                        key={part.code}
+                        className="p-4 rounded-lg border border-gray-700 bg-gray-800/30 hover:border-purple-500/50 hover:bg-gray-800/50 transition-all cursor-pointer group"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.4 + index * 0.05 }}
+                        whileHover={{ scale: 1.05, y: -4 }}
+                        onClick={() => setExpandedStat(expandedStat === part.code ? null : part.code)}
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl group-hover:scale-125 transition-transform">
+                              {bodyPartIcons[part.code] || '💪'}
+                            </span>
+                            <div>
+                              <p className="text-white font-bold text-sm">{part.name}</p>
+                              <p className="text-xs text-purple-400 font-bold">Lv. {part.level}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-yellow-400 text-xs font-bold">{part.currentExp}</p>
+                            <p className="text-gray-500 text-xs">/ {part.nextLevelExp}</p>
+                          </div>
+                        </div>
+
+                        {/* 진행률 바 */}
+                        <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                          <motion.div
+                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${expPercentage}%` }}
+                            transition={{ duration: 0.8 }}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </GameCard>
+            )}
 
             {/* 체지방률 시각화 */}
             <GameCard delay={0.4}>
@@ -378,37 +388,39 @@ export default function Home() {
                 {/* 비주얼라이제이션 */}
                 <div className="flex-shrink-0">
                   <BodyPartVisualization
-                    bodyFatPercentage={character.bodyFatPercentage || 15}
-                    size="sm"
-                    interactive={false}
+                    bodyParts={character.bodyParts?.map((part) => ({
+                      id: part.code,
+                      name: part.name,
+                      level: part.level,
+                      exp: part.currentExp,
+                      maxExp: part.nextLevelExp,
+                      icon: bodyPartIcons[part.code] || '💪',
+                    })) || []}
                   />
                 </div>
 
-                {/* 신체 구성 통계 */}
+                {/* 신체 부위 레벨 요약 */}
                 <div className="flex-1 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gradient-to-br from-orange-600/20 to-red-600/20 border border-orange-500/30 p-4 rounded-lg">
-                      <p className="text-gray-400 text-xs mb-1">체지방률</p>
-                      <p className="text-3xl font-bold text-orange-400">{character.bodyFatPercentage || 15}%</p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {(character.bodyFatPercentage || 15) < 10
-                          ? '🔥 초저체지방'
-                          : (character.bodyFatPercentage || 15) < 15
-                          ? '💪 매우 탄탄'
-                          : (character.bodyFatPercentage || 15) < 20
-                          ? '✅ 정상'
-                          : (character.bodyFatPercentage || 15) < 30
-                          ? '⚠️ 개선 필요'
-                          : '🎯 주의 필요'}
+                    <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 p-4 rounded-lg">
+                      <p className="text-gray-400 text-xs mb-1">평균 레벨</p>
+                      <p className="text-3xl font-bold text-purple-400">
+                        {character.bodyParts && character.bodyParts.length > 0
+                          ? Math.round(
+                              character.bodyParts.reduce((sum, part) => sum + part.level, 0) /
+                                character.bodyParts.length
+                            )
+                          : 1}
                       </p>
+                      <p className="text-xs text-gray-500 mt-1">신체 부위</p>
                     </div>
 
                     <div className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 border border-blue-500/30 p-4 rounded-lg">
-                      <p className="text-gray-400 text-xs mb-1">근육량</p>
+                      <p className="text-gray-400 text-xs mb-1">활동 부위</p>
                       <p className="text-3xl font-bold text-blue-400">
-                        {(100 - (character.bodyFatPercentage || 15)).toFixed(1)}%
+                        {character.bodyParts?.length || 0}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">제지방량 (LBM)</p>
+                      <p className="text-xs text-gray-500 mt-1">개 부위</p>
                     </div>
                   </div>
 
@@ -416,15 +428,9 @@ export default function Home() {
                   <div className="bg-purple-900/20 border border-purple-500/30 p-4 rounded-lg">
                     <p className="text-purple-300 text-xs font-bold mb-2">💡 추천</p>
                     <p className="text-gray-300 text-sm leading-relaxed">
-                      {(character.bodyFatPercentage || 15) < 10
-                        ? '현재 매우 낮은 체지방률입니다. 근육 유지에 집중하고 과도한 에너지 소모를 피하세요.'
-                        : (character.bodyFatPercentage || 15) < 15
-                        ? '탄탄한 신체 구성입니다. 근력 운동과 고단백 식단을 유지하세요.'
-                        : (character.bodyFatPercentage || 15) < 20
-                        ? '좋은 체형입니다. 꾸준한 운동으로 근육을 키우세요.'
-                        : (character.bodyFatPercentage || 15) < 30
-                        ? '체지방을 줄이기 위해 유산소 운동을 늘리세요.'
-                        : '식단 조절과 운동을 통해 건강한 체형을 목표로 하세요.'}
+                      {character.bodyParts && character.bodyParts.length > 0
+                        ? '균형잡힌 운동을 위해 모든 신체 부위를 골고루 단련하세요. 오늘도 화이팅!'
+                        : '운동을 시작하여 신체 부위 레벨을 올려보세요!'}
                     </p>
                   </div>
                 </div>
@@ -506,12 +512,7 @@ export default function Home() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.65 + index * 0.05 }}
               >
-                <AchievementBadge
-                  icon={achievement.icon}
-                  title={achievement.title}
-                  description={achievement.description}
-                  unlocked={achievement.unlocked}
-                />
+                <AchievementBadge achievement={achievement} />
               </motion.div>
             ))}
           </div>

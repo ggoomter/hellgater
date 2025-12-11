@@ -1,7 +1,28 @@
 import apiClient from './axios';
 import { ApiResponse } from '@shared/types/api.types';
 
-export const curriculumApi = {
+export interface ContentModule {
+  id: string;
+  weekId: number;
+  displayOrder: number;
+  moduleType: string;
+  titleKo: string;
+  titleEn: string;
+  description?: string;
+  contentData: any;
+  videoUrl?: string;
+  thumbnailUrl?: string;
+  imageUrls: string[];
+  audioUrl?: string;
+  isInteractive: boolean;
+  hasQuiz: boolean;
+  requiresCompletion: boolean;
+  expReward: number;
+  estimatedTime?: number;
+  isCompleted?: boolean;
+}
+
+const curriculumApi = {
   // 주차 목록 조회
   getAllWeeks: async () => {
     const response = await apiClient.get<ApiResponse<any>>('/curriculum/weeks');
@@ -45,11 +66,22 @@ export const curriculumApi = {
   },
 
   // 퀴즈 제출
-  submitQuiz: async (moduleId: string, answers: any[], score: number) => {
-    const response = await apiClient.post<ApiResponse<any>>(`/curriculum/modules/${moduleId}/submit-quiz`, {
-      answers,
-      score,
-    });
+  submitQuiz: async (moduleId: string, data: { answers: Record<string, any>; score: number }) => {
+    const response = await apiClient.post<ApiResponse<any>>(`/curriculum/modules/${moduleId}/submit-quiz`, data);
     return response.data;
   },
 };
+
+// Export individual functions for easier access
+export const getAllWeeks = curriculumApi.getAllWeeks;
+export const getWeekByNumber = curriculumApi.getWeekByNumber;
+export const getWeekModules = curriculumApi.getWeekModules;
+export const getProgress = curriculumApi.getProgress;
+export const getWeekProgress = curriculumApi.getWeekProgress;
+export const startWeek = curriculumApi.startWeek;
+export const completeModule = curriculumApi.completeModule;
+export const submitQuiz = curriculumApi.submitQuiz;
+
+// Also export as default object for backward compatibility
+export default curriculumApi;
+export { curriculumApi };

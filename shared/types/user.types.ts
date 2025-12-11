@@ -24,6 +24,16 @@ export interface Character {
   nextLevelExp: number;
   stats: CharacterStats;
   attributes: CharacterAttributes;
+  bodyParts?: Array<{
+    id: string;
+    code: string;
+    name: string;
+    level: number;
+    currentExp: number;
+    nextLevelExp: number;
+    max1RM: number;
+    lastWorkoutAt?: string;
+  }>;
 }
 
 export interface CharacterStats {
