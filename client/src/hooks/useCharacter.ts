@@ -16,8 +16,8 @@ export function useCreateCharacter() {
       // 캐릭터 생성 성공 시 쿼리 캐시 업데이트
       queryClient.setQueryData(['character', 'me'], character);
 
-      // 홈으로 이동
-      navigate('/');
+      // 대시보드로 이동
+      navigate('/dashboard');
     },
   });
 }

@@ -9,7 +9,10 @@ import Input from '../components/common/Input';
 import Card from '../components/common/Card';
 import BodyPartSelector from '../components/workout/BodyPartSelector';
 import ExerciseSelector from '../components/workout/ExerciseSelector';
+<<<<<<< HEAD
 import LevelUpModal from '../components/common/LevelUpModal';
+=======
+>>>>>>> a14ba48b3ded447a7d81adc44ed6140ba9d425b9
 
 const WorkoutRecord = () => {
   const navigate = useNavigate();
@@ -19,7 +22,15 @@ const WorkoutRecord = () => {
   const { data: availableLevelTests } = useAvailableLevelTests();
   // Form state (must be declared before hooks that reference it)
   const [formData, setFormData] = useState({
+<<<<<<< HEAD
     exerciseId: null as number | null,
+=======
+    bodyPartId: null as number | null,
+    bodyPartName: '',
+    view: null as 'front' | 'back' | null,
+    exerciseId: null as number | null,
+    exerciseName: '',
+>>>>>>> a14ba48b3ded447a7d81adc44ed6140ba9d425b9
     sets: 3,
     reps: 10,
     weight: 60,
@@ -60,11 +71,13 @@ const WorkoutRecord = () => {
       oneRM,
       estimatedExp,
     });
-  }, [formData.weight, formData.reps, formData.sets, calculate, estimate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.weight, formData.reps, formData.sets]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+<<<<<<< HEAD
     if (!formData.exerciseId) {
       alert('운동을 선택해주세요.');
       return;
@@ -78,6 +91,17 @@ const WorkoutRecord = () => {
       const result = await createWorkout.mutateAsync({
         exerciseId: formData.exerciseId,
         bodyPart: bodyPartName,
+=======
+    if (!formData.exerciseId || !formData.bodyPartName) {
+      alert('부위와 운동 종목을 선택해주세요');
+      return;
+    }
+
+    try {
+      const result = await createWorkout.mutateAsync({
+        exerciseId: formData.exerciseId,
+        bodyPart: formData.bodyPartName,
+>>>>>>> a14ba48b3ded447a7d81adc44ed6140ba9d425b9
         sets: formData.sets,
         reps: formData.reps,
         weight: formData.weight,
@@ -98,6 +122,7 @@ const WorkoutRecord = () => {
         });
       }
 
+<<<<<<< HEAD
       // 레벨테스트 가능 알림 (레벨업 모달 닫힌 후)
       if (result.levelTestAvailable && !result.levelUp) {
         setTimeout(() => {
@@ -113,6 +138,10 @@ const WorkoutRecord = () => {
           navigate('/');
         }, 1000);
       }
+=======
+      // 성공 후 홈으로 이동
+      navigate('/dashboard');
+>>>>>>> a14ba48b3ded447a7d81adc44ed6140ba9d425b9
     } catch (error: any) {
       console.error('❌ Failed to create workout:', error);
       alert(error.response?.data?.message || '운동 기록 생성에 실패했습니다.');
@@ -123,6 +152,25 @@ const WorkoutRecord = () => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }));
+  };
+
+  const handleSelectBodyPart = (bodyPartId: number, bodyPartName: string, view: 'front' | 'back') => {
+    setFormData((prev) => ({
+      ...prev,
+      bodyPartId,
+      bodyPartName,
+      view,
+      exerciseId: null, // 부위 변경 시 운동 선택 초기화
+      exerciseName: '',
+    }));
+  };
+
+  const handleSelectExercise = (exerciseId: number, exerciseName: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      exerciseId,
+      exerciseName,
     }));
   };
 
@@ -164,6 +212,7 @@ const WorkoutRecord = () => {
         {/* 부위 선택 */}
         <Card variant="glass" className="mb-6">
           <div className="p-6">
+<<<<<<< HEAD
             {bodyPartsData ? (
               <BodyPartSelector
                 bodyParts={bodyPartsData.bodyParts}
@@ -214,6 +263,34 @@ const WorkoutRecord = () => {
                     </p>
                   </div>
                 </div>
+=======
+            <h2 className="text-xl font-bold text-white mb-4">운동 정보 입력</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Body Part Selection */}
+              <BodyPartSelector
+                onSelectBodyPart={handleSelectBodyPart}
+                selectedBodyPartId={formData.bodyPartId}
+              />
+
+              {/* Exercise Selection */}
+              <ExerciseSelector
+                bodyPartId={formData.bodyPartId}
+                view={formData.view}
+                selectedExerciseId={formData.exerciseId}
+                onSelectExercise={handleSelectExercise}
+              />
+
+              {/* 선택된 운동 표시 */}
+              {formData.exerciseName && (
+                <div className="bg-primary-500/10 border border-primary-500/30 rounded-lg p-3">
+                  <p className="text-sm text-gray-400">선택된 운동</p>
+                  <p className="text-white font-semibold">
+                    {formData.exerciseName} ({formData.bodyPartName})
+                  </p>
+                </div>
+              )}
+>>>>>>> a14ba48b3ded447a7d81adc44ed6140ba9d425b9
 
               {/* Weight */}
               <div>
@@ -274,10 +351,16 @@ const WorkoutRecord = () => {
                 type="submit"
                 variant="primary"
                 fullWidth
-                disabled={createWorkout.isPending}
+                disabled={createWorkout.isPending || !formData.exerciseId}
               >
                 {createWorkout.isPending ? '기록 중...' : '운동 기록 저장'}
               </Button>
+
+              {!formData.exerciseId && (
+                <p className="text-xs text-gray-400 text-center -mt-2">
+                  부위와 운동을 선택하면 저장할 수 있습니다
+                </p>
+              )}
             </form>
           </div>
         </Card>
@@ -376,7 +459,7 @@ const WorkoutRecord = () => {
         {/* Back Button */}
         <div className="mt-6 text-center">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="text-gray-400 hover:text-white transition-colors"
           >
             ← 홈으로 돌아가기
