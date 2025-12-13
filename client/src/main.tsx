@@ -5,15 +5,19 @@ import './index.css';
 
 // 개발 중 localStorage 정리 (한 번만 실행)
 if (import.meta.env.DEV) {
-  const cleaned = sessionStorage.getItem('localStorage-cleaned');
-  if (!cleaned) {
-    console.log('🧹 Cleaning old localStorage data...');
-    // 구버전 키 제거
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('persist:root');
-    sessionStorage.setItem('localStorage-cleaned', 'true');
-    console.log('✅ localStorage cleaned');
+  try {
+    const cleaned = sessionStorage.getItem('localStorage-cleaned');
+    if (!cleaned) {
+      console.log('🧹 Cleaning old localStorage data...');
+      // 구버전 키 제거
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('persist:root');
+      sessionStorage.setItem('localStorage-cleaned', 'true');
+      console.log('✅ localStorage cleaned');
+    }
+  } catch (e) {
+    console.warn('⚠️ Storage access blocked or restricted:', e);
   }
 }
 

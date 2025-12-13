@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Card, GameCard } from '../components/common';
-import ExplorationMap from '../components/map/ExplorationMap';
+import { motion } from 'framer-motion';
 import IsometricGameMap from '../components/map/IsometricGameMap';
 import NeutralContinentMap from '../components/map/NeutralContinentMap';
 import { Search, BookOpen, Trophy, MapPin, CheckCircle2, Lock } from 'lucide-react';
@@ -470,7 +468,7 @@ export default function Map() {
               </div>
               <div className="flex gap-2">
                 <motion.button
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate('/dashboard')}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-green-500/50 transition-all"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

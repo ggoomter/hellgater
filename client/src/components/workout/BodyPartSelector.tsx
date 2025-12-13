@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { muscleBodySvg } from '../../assets/muscleBody';
 
 interface BodyPart {
   id: number;
@@ -18,194 +19,97 @@ interface BodyPartSelectorProps {
 const BodyPartSelector = ({ bodyParts, selectedBodyPartId, onSelect }: BodyPartSelectorProps) => {
   const [hoveredPart, setHoveredPart] = useState<string | null>(null);
 
-  // 부위 코드별 SVG path와 위치 매핑
-  const bodyPartPaths: Record<string, { path: string; labelX: number; labelY: number }> = {
-    shoulder: {
-      path: 'M120 80 L140 90 L140 110 L120 105 Z M180 80 L160 90 L160 110 L180 105 Z',
-      labelX: 150,
-      labelY: 75,
-    },
-    chest: {
-      path: 'M130 110 L170 110 L165 145 L135 145 Z',
-      labelX: 150,
-      labelY: 125,
-    },
-    back: {
-      path: 'M320 110 L360 110 L365 145 L355 155 L335 155 L325 145 Z',
-      labelX: 342,
-      labelY: 125,
-    },
-    arm: {
-      path: 'M110 110 L120 105 L115 165 L105 165 Z M180 105 L190 110 L195 165 L185 165 Z',
-      labelX: 105,
-      labelY: 135,
-    },
-    abdominal: {
-      path: 'M135 145 L165 145 L162 185 L138 185 Z',
-      labelX: 150,
-      labelY: 165,
-    },
-    hip: {
-      path: 'M138 185 L162 185 L160 210 L140 210 Z',
-      labelX: 150,
-      labelY: 197,
-    },
-    leg: {
-      path: 'M138 210 L148 210 L145 280 L135 280 Z M152 210 L162 210 L165 280 L155 280 Z',
-      labelX: 150,
-      labelY: 245,
-    },
+  // SVG 문자열을 DOM으로 파싱하여 직접 조작할 수 있도록 함
+  // React에서는 dangerouslySetInnerHTML을 사용하거나 컴포넌트화 해야 함. 
+  // 여기서는 SVG 내부의 data-part 속성을 활용할 수 있도록 이벤트 위임을 사용.
+
+  // 코드 매핑 (SVG data-part -> DB code)
+  // SVG에는 일반적인 명칭(chest, back...)이 있고 DB에도 코드가 있으므로 매핑 필요
+  const partMapping: Record<string, string> = {
+    'chest': 'chest',
+    'back': 'back',
+    'shoulders': 'shoulders',
+    'arms': 'arms',
+    'abs': 'abs',
+    'legs': 'legs',
+    'cardio': 'cardio' // cardio는 SVG에 없을 수 있음
   };
 
   const getBodyPartByCode = (code: string) => {
+    // DB의 code와 매핑된 code가 일치하는지 확인
     return bodyParts.find((bp) => bp.code === code);
   };
 
-  const isSelected = (code: string) => {
-    const bodyPart = getBodyPartByCode(code);
-    return bodyPart?.id === selectedBodyPartId;
-  };
-
-  const handlePartClick = (code: string) => {
-    const bodyPart = getBodyPartByCode(code);
-    if (bodyPart) {
-      onSelect(bodyPart.id);
+  const handleSvgClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    // muscle-part 클래스를 가진 요소를 클릭했을 때
+    if (target.classList.contains('muscle-part')) {
+      const partCode = target.getAttribute('data-part');
+      if (partCode && partMapping[partCode]) {
+        const dbCode = partMapping[partCode];
+        const bodyPart = getBodyPartByCode(dbCode);
+        if (bodyPart) {
+          onSelect(bodyPart.id);
+        }
+      }
     }
   };
 
+  const handleSvgHover = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('muscle-part')) {
+      const partCode = target.getAttribute('data-part');
+      if (partCode && partMapping[partCode]) {
+        setHoveredPart(partMapping[partCode]);
+      }
+    } else {
+      setHoveredPart(null);
+    }
+  };
+
+  // 선택된 부위 스타일링을 위한 CSS 클래스 주입
+  // SVG가 문자열로 렌더링되므로, CSS로 제어
+  const getSelectedCode = () => {
+    const part = bodyParts.find(p => p.id === selectedBodyPartId);
+    return part ? part.code : null;
+  };
+
+  const selectedCode = getSelectedCode();
+
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full">
       <h3 className="text-lg font-bold text-white mb-4">운동 부위 선택</h3>
 
-      <div className="relative">
-        <svg
-          viewBox="0 0 480 320"
-          className="w-full max-w-md"
-          style={{ filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))' }}
-        >
-          {/* 전면 몸통 실루엣 */}
-          <g id="front-body">
-            {/* 머리 */}
-            <circle cx="150" cy="50" r="20" fill="#4B5563" opacity="0.3" />
-
-            {/* 목 */}
-            <rect x="145" y="70" width="10" height="10" fill="#4B5563" opacity="0.3" />
-
-            {/* 몸통 배경 */}
-            <path
-              d="M120 80 L180 80 L180 105 L190 110 L195 165 L185 165 L185 210 L165 210 L165 280 L135 280 L135 210 L115 210 L115 165 L105 165 L110 110 L120 105 Z"
-              fill="#374151"
-              opacity="0.2"
-            />
-
-            {/* 클릭 가능한 부위들 */}
-            {Object.entries(bodyPartPaths).map(([code, { path, labelX, labelY }]) => {
-              const bodyPart = getBodyPartByCode(code);
-              const selected = isSelected(code);
-              const hovered = hoveredPart === code;
-
-              return (
-                <g key={code}>
-                  {/* 부위 영역 */}
-                  <path
-                    d={path}
-                    fill={selected ? '#78E6C8' : hovered ? '#FF5B5B' : '#6B7280'}
-                    opacity={selected ? 0.9 : hovered ? 0.7 : 0.5}
-                    stroke={selected ? '#78E6C8' : hovered ? '#FF5B5B' : '#4B5563'}
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-200"
-                    onMouseEnter={() => setHoveredPart(code)}
-                    onMouseLeave={() => setHoveredPart(null)}
-                    onClick={() => handlePartClick(code)}
-                  />
-
-                  {/* 라벨 (호버 또는 선택 시) */}
-                  {(hovered || selected) && bodyPart && (
-                    <text
-                      x={labelX}
-                      y={labelY}
-                      textAnchor="middle"
-                      fill="white"
-                      fontSize="12"
-                      fontWeight="bold"
-                      className="pointer-events-none"
-                      style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
-                    >
-                      {bodyPart.nameKo}
-                    </text>
-                  )}
-                </g>
-              );
-            })}
-          </g>
-
-          {/* 후면 몸통 실루엣 (작게 오른쪽에 배치) */}
-          <g id="back-body" transform="translate(190, 0)">
-            {/* 머리 */}
-            <circle cx="152" cy="50" r="20" fill="#4B5563" opacity="0.3" />
-
-            {/* 목 */}
-            <rect x="147" y="70" width="10" height="10" fill="#4B5563" opacity="0.3" />
-
-            {/* 몸통 배경 */}
-            <path
-              d="M122 80 L182 80 L182 105 L192 110 L197 165 L187 165 L187 210 L167 210 L167 280 L137 280 L137 210 L117 210 L117 165 L107 165 L112 110 L122 105 Z"
-              fill="#374151"
-              opacity="0.2"
-            />
-
-            {/* 등 부위만 클릭 가능 */}
-            {bodyPartPaths.back && (() => {
-              const { path } = bodyPartPaths.back;
-              const selected = isSelected('back');
-              const hovered = hoveredPart === 'back';
-              const bodyPart = getBodyPartByCode('back');
-
-              return (
-                <g>
-                  <path
-                    d={path}
-                    fill={selected ? '#78E6C8' : hovered ? '#FF5B5B' : '#6B7280'}
-                    opacity={selected ? 0.9 : hovered ? 0.7 : 0.5}
-                    stroke={selected ? '#78E6C8' : hovered ? '#FF5B5B' : '#4B5563'}
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all duration-200"
-                    onMouseEnter={() => setHoveredPart('back')}
-                    onMouseLeave={() => setHoveredPart(null)}
-                    onClick={() => handlePartClick('back')}
-                  />
-
-                  {(hovered || selected) && bodyPart && (
-                    <text
-                      x={152}
-                      y={125}
-                      textAnchor="middle"
-                      fill="white"
-                      fontSize="12"
-                      fontWeight="bold"
-                      className="pointer-events-none"
-                      style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
-                    >
-                      {bodyPart.nameKo}
-                    </text>
-                  )}
-                </g>
-              );
-            })()}
-          </g>
-
-          {/* 라벨 */}
-          <text x="150" y="310" textAnchor="middle" fill="#9CA3AF" fontSize="11">
-            전면
-          </text>
-          <text x="342" y="310" textAnchor="middle" fill="#9CA3AF" fontSize="11">
-            후면
-          </text>
-        </svg>
+      <div 
+        className="relative w-full max-w-2xl mx-auto cursor-pointer"
+        onClick={handleSvgClick}
+        onMouseMove={handleSvgHover}
+        onMouseLeave={() => setHoveredPart(null)}
+      >
+        <style>{`
+          /* 동적 스타일링 */
+          ${selectedCode ? `
+            .muscle-part[data-part="${selectedCode}"] {
+              fill: #2979ff !important;
+              stroke: #fff !important;
+              stroke-width: 1.5px !important;
+              filter: drop-shadow(0 0 10px #2979ff) !important;
+            }
+          ` : ''}
+          ${hoveredPart ? `
+            .muscle-part[data-part="${hoveredPart}"]:not([data-part="${selectedCode}"]) {
+               fill: #00e5ff !important;
+               filter: drop-shadow(0 0 6px #00e5ff) !important;
+            }
+          ` : ''}
+        `}</style>
+        
+        {/* SVG 렌더링 */}
+        <div dangerouslySetInnerHTML={{ __html: muscleBodySvg }} />
       </div>
 
-      {/* 부위 목록 (버튼 형태) */}
-      <div className="mt-6 grid grid-cols-2 gap-2 w-full max-w-md">
+      {/* 모바일 등의 환경을 위한 부위 버튼 목록 (선택 보조) */}
+      <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-2 w-full max-w-lg">
         {bodyParts.map((bodyPart) => {
           const selected = bodyPart.id === selectedBodyPartId;
           return (
@@ -215,7 +119,7 @@ const BodyPartSelector = ({ bodyParts, selectedBodyPartId, onSelect }: BodyPartS
               onMouseEnter={() => setHoveredPart(bodyPart.code)}
               onMouseLeave={() => setHoveredPart(null)}
               className={`
-                px-4 py-3 rounded-lg font-medium transition-all duration-200
+                px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
                 ${
                   selected
                     ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/50'
@@ -225,7 +129,7 @@ const BodyPartSelector = ({ bodyParts, selectedBodyPartId, onSelect }: BodyPartS
             >
               <div className="flex items-center justify-between">
                 <span>{bodyPart.nameKo}</span>
-                <span className="text-xs opacity-70">({bodyPart.exerciseCount})</span>
+                <span className="text-xs opacity-70 bg-black/20 px-1.5 py-0.5 rounded-full">{bodyPart.exerciseCount}</span>
               </div>
             </button>
           );

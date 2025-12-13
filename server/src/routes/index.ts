@@ -7,6 +7,8 @@ import exerciseRoutes from './exercise.routes.js';
 import curriculumRoutes from './curriculumRoutes';
 import measurementRoutes from './measurementRoutes';
 
+import skillRoutes from './skill.routes.js';
+
 const router = Router();
 
 // API v1 라우트
@@ -17,5 +19,6 @@ router.use('/level-tests', levelTestRoutes);
 router.use('/exercises', exerciseRoutes);
 router.use('/curriculum', curriculumRoutes);
 router.use('/measurements', measurementRoutes);
+router.use('/skills', skillRoutes);
 
 export default router;

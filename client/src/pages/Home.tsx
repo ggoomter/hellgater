@@ -72,15 +72,15 @@ export default function Home() {
 
   // Mock 퀘스트 데이터
   const dailyQuests = [
-    { id: '1', title: '첫 운동', description: '오늘의 첫 운동을 기록하세요', reward: 100, progress: 1, total: 1, completed: true, icon: '💪' },
+    { id: '1', title: '첫 운동', description: '오늘의 첫 운동을 기록하세요', reward: 100, progress: 0, total: 1, completed: false, icon: '💪' },
     { id: '2', title: '신체 3부위 운동', description: '3개 이상의 신체 부위를 운동하세요', reward: 200, progress: 2, total: 3, completed: false, icon: '🏋️' },
     { id: '3', title: '1000칼로리 소모', description: '1000칼로리 이상 소모하세요', reward: 150, progress: 650, total: 1000, completed: false, icon: '🔥' },
   ];
 
   // Mock 업적 데이터
   const achievements = [
-    { icon: '🥇', title: '첫 운동', description: '첫 운동 완료', unlocked: true },
-    { icon: '🏋️', title: '근력의 신', description: '벤치프레스 100kg 달성', unlocked: true },
+    { icon: '🥇', title: '첫 운동', description: '첫 운동 완료', unlocked: false },
+    { icon: '🏋️', title: '근력의 신', description: '벤치프레스 100kg 달성', unlocked: false },
     { icon: '🔥', title: '불타는 에너지', description: '일주일 연속 운동', unlocked: false },
     { icon: '🚀', title: '상승하는 별', description: '레벨 10 달성', unlocked: false },
     { icon: '👑', title: '챌린저', description: '챌린저 등급 도달', unlocked: false },
@@ -251,18 +251,18 @@ export default function Home() {
             {/* 연속 추적 & 주간 목표 */}
             <GameCard delay={0.32}>
               <StreakCounter
-                currentStreak={12}
-                bestStreak={28}
-                lastActivityDate="2024-01-15"
+                currentStreak={0}
+                bestStreak={0}
+                lastActivityDate="-"
               />
             </GameCard>
 
             <GameCard delay={0.34}>
               <WeeklyGoal
-                targetWorkouts={5}
-                completedWorkouts={4}
-                targetMinutes={300}
-                completedMinutes={240}
+                targetWorkouts={3}
+                completedWorkouts={0}
+                targetMinutes={150}
+                completedMinutes={0}
               />
             </GameCard>
 
@@ -459,11 +459,7 @@ export default function Home() {
               </h3>
 
               <div className="space-y-3">
-                {[
-                  { date: '2024-01-15', exercise: '벤치프레스', sets: 3, weight: 80, exp: 240, icon: '💪' },
-                  { date: '2024-01-14', exercise: '스쿼트', sets: 4, weight: 100, exp: 400, icon: '🦵' },
-                  { date: '2024-01-13', exercise: '데드리프트', sets: 3, weight: 120, exp: 360, icon: '🏋️' },
-                ].map((activity, index) => (
+                {([] as any[]).map((activity, index) => (
                   <motion.div
                     key={index}
                     className="p-4 rounded-lg border border-gray-700/50 bg-gray-800/20 hover:bg-gray-800/40 hover:border-green-500/50 transition-all group"

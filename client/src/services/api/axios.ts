@@ -17,20 +17,16 @@ export const apiClient = axios.create({
 // Request Interceptor - 토큰 자동 첨부
 apiClient.interceptors.request.use(
   (config) => {
-    // Redux Persist에서 토큰 읽기
+    // Redux Store에서 토큰 읽기 (메모리)
     try {
-      const persistedState = localStorage.getItem('persist:hellgater-root');
-      if (persistedState) {
-        const state = JSON.parse(persistedState);
-        const authState = JSON.parse(state.auth || '{}');
-        const accessToken = authState.tokens?.accessToken;
+      const state = store.getState();
+      const accessToken = state.auth.tokens?.accessToken;
 
-        if (accessToken) {
-          config.headers.Authorization = `Bearer ${accessToken}`;
-        }
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
     } catch (error) {
-      console.error('Failed to get access token from Redux Persist:', error);
+      console.error('Failed to get access token from store:', error);
     }
 
     return config;
@@ -52,15 +48,11 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      // Redux Persist에서 refreshToken 읽기
+      // Redux Store에서 refreshToken 읽기
       let refreshToken = null;
       try {
-        const persistedState = localStorage.getItem('persist:hellgater-root');
-        if (persistedState) {
-          const state = JSON.parse(persistedState);
-          const authState = JSON.parse(state.auth || '{}');
-          refreshToken = authState.tokens?.refreshToken;
-        }
+        const state = store.getState();
+        refreshToken = state.auth.tokens?.refreshToken;
       } catch (err) {
         console.error('Failed to get refresh token:', err);
       }
